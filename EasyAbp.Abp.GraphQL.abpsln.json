@@ -1,0 +1,7 @@
+{
+  "modules": {
+    "EasyAbp.Abp.GraphQL": {
+      "path": "EasyAbp.Abp.GraphQL.abpmdl.json"
+    }
+  }
+}

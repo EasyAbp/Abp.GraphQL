@@ -1,0 +1,59 @@
+{
+  "folders": {
+    "items": {
+      "src": {},
+      "test": {},
+      "host": {}
+    }
+  },
+  "packages": {
+    "EasyAbp.Abp.GraphQL.Application.Contracts": {
+      "path": "src/EasyAbp.Abp.GraphQL.Application.Contracts/EasyAbp.Abp.GraphQL.Application.Contracts.abppkg.json",
+      "folder": "src"
+    },
+    "EasyAbp.Abp.GraphQL.Application": {
+      "path": "src/EasyAbp.Abp.GraphQL.Application/EasyAbp.Abp.GraphQL.Application.abppkg.json",
+      "folder": "src"
+    },
+    "EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet": {
+      "path": "src/EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet/EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet.abppkg.json",
+      "folder": "src"
+    },
+    "EasyAbp.Abp.GraphQL.HttpApi": {
+      "path": "src/EasyAbp.Abp.GraphQL.HttpApi/EasyAbp.Abp.GraphQL.HttpApi.abppkg.json",
+      "folder": "src"
+    },
+    "EasyAbp.Abp.GraphQL.HttpApi.Client": {
+      "path": "src/EasyAbp.Abp.GraphQL.HttpApi.Client/EasyAbp.Abp.GraphQL.HttpApi.Client.abppkg.json",
+      "folder": "src"
+    },
+    "EasyAbp.Abp.GraphQL.TestBase": {
+      "path": "test/EasyAbp.Abp.GraphQL.TestBase/EasyAbp.Abp.GraphQL.TestBase.abppkg.json",
+      "folder": "test"
+    },
+    "EasyAbp.Abp.GraphQL.Application.Tests": {
+      "path": "test/EasyAbp.Abp.GraphQL.Application.Tests/EasyAbp.Abp.GraphQL.Application.Tests.abppkg.json",
+      "folder": "test"
+    },
+    "EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet.Tests": {
+      "path": "test/EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet.Tests/EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet.Tests.abppkg.json",
+      "folder": "test"
+    },
+    "EasyAbp.Abp.GraphQL.HttpApi.Host": {
+      "path": "host/EasyAbp.Abp.GraphQL.HttpApi.Host/EasyAbp.Abp.GraphQL.HttpApi.Host.abppkg.json",
+      "folder": "host"
+    },
+    "EasyAbp.Abp.GraphQL.HttpApi.Client.ConsoleTestApp": {
+      "path": "test/EasyAbp.Abp.GraphQL.HttpApi.Client.ConsoleTestApp/EasyAbp.Abp.GraphQL.HttpApi.Client.ConsoleTestApp.abppkg.json",
+      "folder": "test"
+    },
+    "EasyAbp.Abp.GraphQL.IdentityServer": {
+      "path": "host/EasyAbp.Abp.GraphQL.IdentityServer/EasyAbp.Abp.GraphQL.IdentityServer.abppkg.json",
+      "folder": "host"
+    },
+    "EasyAbp.Abp.GraphQL.Host.Shared": {
+      "path": "host/EasyAbp.Abp.GraphQL.Host.Shared/EasyAbp.Abp.GraphQL.Host.Shared.abppkg.json",
+      "folder": "host"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="..\..\common.props" />
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <RootNamespace />
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="GraphQL" Version="$(GraphQLDotnetVersion)" />
+        <PackageReference Include="GraphQL.SystemTextJson" Version="$(GraphQLDotnetVersion)" />
+        <ProjectReference Include="..\EasyAbp.Abp.GraphQL.Application.Contracts\EasyAbp.Abp.GraphQL.Application.Contracts.csproj" />
+        <ProjectReference Include="..\EasyAbp.Abp.GraphQL.Provider.Shared\EasyAbp.Abp.GraphQL.Provider.Shared.csproj" />
+    </ItemGroup>
+    
+</Project>

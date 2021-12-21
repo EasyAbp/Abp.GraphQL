@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <RootNamespace>EasyAbp.Abp.GraphQL</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet\EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet.csproj" />
+        <ProjectReference Include="..\EasyAbp.Abp.GraphQL.Application.Tests\EasyAbp.Abp.GraphQL.Application.Tests.csproj" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
+    </ItemGroup>
+
+</Project>
