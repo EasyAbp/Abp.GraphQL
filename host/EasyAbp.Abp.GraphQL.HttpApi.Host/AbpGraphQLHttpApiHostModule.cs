@@ -10,10 +10,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using EasyAbp.Abp.GraphQL.MultiTenancy;
 using EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using StackExchange.Redis;
 using Microsoft.OpenApi.Models;
 using Volo.Abp;
 using Volo.Abp.AspNetCore.Mvc.UI.MultiTenancy;
+using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic;
 using Volo.Abp.AspNetCore.Serilog;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.Autofac;
@@ -44,7 +46,8 @@ namespace EasyAbp.Abp.GraphQL;
     typeof(AbpPermissionManagementEntityFrameworkCoreModule),
     typeof(AbpSettingManagementEntityFrameworkCoreModule),
     typeof(AbpAspNetCoreSerilogModule),
-    typeof(AbpSwashbuckleModule)
+    typeof(AbpSwashbuckleModule),
+    typeof(AbpAspNetCoreMvcUiBasicThemeModule)
 )]
 public class AbpGraphQLHttpApiHostModule : AbpModule
 {
@@ -152,6 +155,11 @@ public class AbpGraphQLHttpApiHostModule : AbpModule
                     .AllowCredentials();
             });
         });
+        
+        Configure<RazorPagesOptions>(options =>
+        {
+            //Configure authorization.
+        });
     }
 
     public override void OnApplicationInitialization(ApplicationInitializationContext context)
@@ -193,5 +201,11 @@ public class AbpGraphQLHttpApiHostModule : AbpModule
         app.UseAuditing();
         app.UseAbpSerilogEnrichers();
         app.UseConfiguredEndpoints();
+        
+        // Use GraphQL UIs:
+        app.UseGraphQLPlayground();
+        app.UseGraphQLGraphiQL();
+        app.UseGraphQLAltair();
+        app.UseGraphQLVoyager();
     }
 }

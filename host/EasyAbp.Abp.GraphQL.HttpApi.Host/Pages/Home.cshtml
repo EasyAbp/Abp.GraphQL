@@ -1,0 +1,20 @@
+﻿@page "/"
+@using Volo.Abp.AspNetCore.Mvc.UI.Layout
+@model EasyAbp.Abp.GraphQL.Pages.HomeModel
+@inject IPageLayout PageLayout
+
+@{
+    PageLayout.Content.Title = "Sample of EasyAbp.Abp.GraphQL";
+}
+
+<script>
+    function redirectToPath(path) {
+        document.location.href = path;
+    }
+</script>
+
+<abp-button button-type="Success" id="Swagger" onClick="redirectToPath('/swagger')">Swagger</abp-button>
+<abp-button button-type="Primary" id="Playground" onClick="redirectToPath('/ui/playground')">Playground</abp-button>
+<abp-button button-type="Secondary" id="GraphiQL" onClick="redirectToPath('/ui/graphiql')">GraphiQL</abp-button>
+<abp-button button-type="Warning" id="Altair" onClick="redirectToPath('/ui/altair')">Altair</abp-button>
+<abp-button button-type="Danger" id="Voyager" onClick="redirectToPath('/ui/voyager')">Voyager</abp-button>

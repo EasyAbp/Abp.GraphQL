@@ -3,6 +3,7 @@
 
     <AbpVersion>5.0.0</AbpVersion>
     <GraphQLDotnetVersion>4.6.1</GraphQLDotnetVersion>
+    <GraphQLDotnetServerUiVersion>5.1.1</GraphQLDotnetServerUiVersion>
 
   </PropertyGroup>
 </Project>
