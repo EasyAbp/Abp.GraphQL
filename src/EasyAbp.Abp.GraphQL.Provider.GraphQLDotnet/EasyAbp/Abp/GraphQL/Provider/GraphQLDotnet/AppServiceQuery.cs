@@ -38,9 +38,11 @@ public class AppServiceQuery<TAppService, TGetOutputDto, TGetListOutputDto, TKey
 
         FieldAsync<PagedResultDtoType<TGetListOutputDto>>($"{entityName}List",
             arguments: new QueryArguments(
-                new QueryArgument<NonNullGraphType<GraphQLInputGenericType<TGetListInput>>> { Name = "input" }
+                new QueryArgument<GraphQLInputGenericType<TGetListInput>>
+                    { Name = "input", DefaultValue = Activator.CreateInstance<TGetListInput>() }
             ),
             resolve: async context =>
-                await readOnlyAppService.GetListAsync(context.GetArgument<TGetListInput>("input")));
+                await readOnlyAppService.GetListAsync(context.GetArgument<TGetListInput>("input"))
+        );
     }
 }

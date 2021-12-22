@@ -174,6 +174,78 @@ public class GraphQLAppServiceTests : GraphQLProviderGraphQLDotnetTestBase
     }
     
     [Fact]
+    public async Task Should_Get_Book_List_Without_Input()
+    {
+        var graphQlAppService = ServiceProvider.GetRequiredService<IGraphQLAppService>();
+        var jsonSerializer = ServiceProvider.GetRequiredService<IJsonSerializer>();
+
+        var result = await graphQlAppService.ExecuteAsync(new GraphQLExecutionInput
+        {
+            OperationName = "Book",
+            Query = @"
+            query Book {
+                bookList {
+                    totalCount,
+                    items {
+                        id,
+                        name,
+                        sponsors {
+                            name
+                        }
+                    }
+                }
+            }"
+        });
+        
+        result.ShouldBeCrossPlatJson(@"{
+            ""data"": {
+                ""bookList"": {
+                    ""totalCount"": 6,
+                    ""items"": [
+                        {
+                            ""id"": ""f98f7466-9385-4702-b27b-fa88804dd19d"",
+                            ""name"": ""Book1"",
+                            ""sponsors"": []
+                        },
+                        {
+                            ""id"": ""ca2ebe5d-d0dc-4d63-a77a-46ff520aec44"",
+                            ""name"": ""Book2"",
+                            ""sponsors"": [
+                                {
+                                    ""name"": ""John""
+                                },
+                                {
+                                    ""name"": ""Amy""
+                                }
+                            ]
+                        },
+                        {
+                            ""id"": ""9b0c1169-0da6-4e01-9236-ec603908bae9"",
+                            ""name"": ""Book3"",
+                            ""sponsors"": []
+                        },
+                        {
+                            ""id"": ""9a06f713-f62a-4e1c-a6ae-ab2beb3adc08"",
+                            ""name"": ""Book4"",
+                            ""sponsors"": []
+                        },
+                        {
+                            ""id"": ""07c3bb72-1cd3-4e0c-b38a-604865433fc2"",
+                            ""name"": ""Book5"",
+                            ""sponsors"": []
+                        },
+                        {
+                            ""id"": ""ddc941a7-87e9-4eef-af94-755e8e4494dc"",
+                            ""name"": ""book"",
+                            ""sponsors"": []
+                        }
+                    ]
+                }
+            }
+        }");
+    }
+    
+    [Fact]
     public async Task Should_Get_Book_List()
     {
         var graphQlAppService = ServiceProvider.GetRequiredService<IGraphQLAppService>();
@@ -183,7 +255,7 @@ public class GraphQLAppServiceTests : GraphQLProviderGraphQLDotnetTestBase
         {
             OperationName = "Book",
             Query = @"
-            query Book($input: GetBookListInput!) {
+            query Book($input: GetBookListInput) {
                 bookList(input: $input) {
                     totalCount,
                     items {
