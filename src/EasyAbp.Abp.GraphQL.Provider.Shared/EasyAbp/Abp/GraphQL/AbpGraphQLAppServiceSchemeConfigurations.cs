@@ -34,8 +34,8 @@ public class AbpGraphQLAppServiceSchemeConfigurations
     {
         Check.NotNull(contractsAssembly, nameof(contractsAssembly));
 
-        var appServiceTypes =
-            contractsAssembly.DefinedTypes.Where(x => x.IsAssignableToGenericType(typeof(IReadOnlyAppService<,,,>)));
+        var appServiceTypes = contractsAssembly.DefinedTypes.Where(x =>
+            x.IsInterface && x.IsAssignableToGenericType(typeof(IReadOnlyAppService<,,,>)));
 
         foreach (var appServiceType in appServiceTypes)
         {
