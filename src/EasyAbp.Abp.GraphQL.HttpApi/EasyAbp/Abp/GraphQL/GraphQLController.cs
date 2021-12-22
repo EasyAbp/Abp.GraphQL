@@ -6,7 +6,7 @@ using Volo.Abp;
 namespace EasyAbp.Abp.GraphQL;
 
 [RemoteService(Name = GraphQLRemoteServiceConsts.RemoteServiceName)]
-[Route("/api/graphql")]
+[Route("/graphql")]
 public class GraphQLController : GraphQLControllerBase, IGraphQLAppService
 {
     private readonly IGraphQLAppService _service;
