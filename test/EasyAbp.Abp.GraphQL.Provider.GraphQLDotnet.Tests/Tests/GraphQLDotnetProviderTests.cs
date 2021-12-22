@@ -34,8 +34,9 @@ public class GraphQLDotnetProviderTests : GraphQLProviderGraphQLDotnetTestBase
         var queryProvider = ServiceProvider.GetRequiredService<GraphQLDotnetGraphQLQueryProvider>();
         var schemaContainer = ServiceProvider.GetRequiredService<ISchemaContainer>();
 
-        var authorSchema = await schemaContainer.GetAsync("HelloWorld");
+        var authorSchema = await schemaContainer.GetOrDefaultAsync("HelloWorld");
         
+        authorSchema.Query.Name.ShouldBe("HelloWorldQuery");
         authorSchema.Query.HasField("ping").ShouldBeTrue();
 
         (await queryProvider.ExecuteAsync("HelloWorld", query, new Dictionary<string, object>()))
@@ -47,13 +48,13 @@ public class GraphQLDotnetProviderTests : GraphQLProviderGraphQLDotnetTestBase
     {
         var schemaContainer = ServiceProvider.GetRequiredService<ISchemaContainer>();
 
-        var authorSchema = await schemaContainer.GetAsync("Author");
+        var authorSchema = await schemaContainer.GetOrDefaultAsync("Author");
 
         authorSchema.Query.GetType().ShouldBe(typeof(AuthorAppServiceQuery));
         authorSchema.Query.GetType().ShouldNotBe(typeof(AppServiceQuery<IAuthorAppService, AuthorDto, AuthorDto, int, PagedAndSortedResultRequestDto>));
         authorSchema.Query.HasField("ping").ShouldBeTrue();
         
-        var bookSchema = await schemaContainer.GetAsync("Book");
+        var bookSchema = await schemaContainer.GetOrDefaultAsync("Book");
 
         bookSchema.Query.GetType().ShouldBe(typeof(AppServiceQuery<IBookAppService, BookDto, BookDto, Guid, GetBookListInput>));
         authorSchema.Query.HasField("ping").ShouldBeTrue();

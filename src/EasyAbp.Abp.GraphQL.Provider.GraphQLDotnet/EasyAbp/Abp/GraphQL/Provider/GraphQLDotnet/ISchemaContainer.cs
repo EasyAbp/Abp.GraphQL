@@ -5,5 +5,5 @@ namespace EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet;
 
 public interface ISchemaContainer
 {
-    Task<ISchema> GetAsync(string schemaName);
+    Task<ISchema> GetOrDefaultAsync(string schemaName);
 }

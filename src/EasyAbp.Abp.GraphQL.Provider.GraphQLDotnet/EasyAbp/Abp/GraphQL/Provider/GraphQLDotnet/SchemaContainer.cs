@@ -31,10 +31,16 @@ public class SchemaContainer : ISchemaContainer, ISingletonDependency
 
             Schemas.Add(configuration.SchemaName, (ISchema)schema);
         }
+
+        var introspectionSchema = new Schema(serviceProvider);
+        introspectionSchema.Query = new EmptyQuery();
+        Schemas.Add("IntrospectionQuery", introspectionSchema);
     }
 
-    public virtual Task<ISchema> GetAsync(string schemaName)
+    public virtual Task<ISchema> GetOrDefaultAsync(string schemaName)
     {
-        return Task.FromResult(Schemas[schemaName]);
+        return Task.FromResult(schemaName != null && Schemas.ContainsKey(schemaName)
+            ? Schemas[schemaName]
+            : Schemas["IntrospectionQuery"]);
     }
 }

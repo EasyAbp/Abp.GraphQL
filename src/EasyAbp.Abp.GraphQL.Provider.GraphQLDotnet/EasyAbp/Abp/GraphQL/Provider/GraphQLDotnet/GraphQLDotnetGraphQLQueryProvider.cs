@@ -28,7 +28,9 @@ public class GraphQLDotnetGraphQLQueryProvider : IGraphQLQueryProvider, ITransie
     
     public virtual async Task<Dictionary<string, object>> ExecuteAsync(string operationName, string query, Dictionary<string, object> variables)
     {
-        var schema = await _schemaContainer.GetAsync(operationName);
+        var schema = await _schemaContainer.GetOrDefaultAsync(operationName);
+        
+        variables ??= new Dictionary<string, object>();
         
         foreach (var pair in variables)
         {
@@ -48,15 +50,12 @@ public class GraphQLDotnetGraphQLQueryProvider : IGraphQLQueryProvider, ITransie
             _.Query = queryToExecute;
             _.OperationName = operationName;
             _.Inputs = gInputs;
-
+#if DEBUG
+            _.ThrowOnUnhandledException = true;
+#endif
             _.ComplexityConfiguration = new ComplexityConfiguration { MaxDepth = 15 };
 
         });
-
-        if (result.Errors?.Count > 0)
-        {
-            throw result.Errors.First();
-        }
 
         using var memoryStream = new MemoryStream();
 

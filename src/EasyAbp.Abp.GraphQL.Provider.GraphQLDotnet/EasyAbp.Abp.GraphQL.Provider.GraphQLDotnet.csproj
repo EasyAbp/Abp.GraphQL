@@ -10,6 +10,7 @@
     <ItemGroup>
         <PackageReference Include="GraphQL" Version="$(GraphQLDotnetVersion)" />
         <PackageReference Include="GraphQL.SystemTextJson" Version="$(GraphQLDotnetVersion)" />
+        <PackageReference Include="GraphQL.MicrosoftDI" Version="$(GraphQLDotnetVersion)" />
         <ProjectReference Include="..\EasyAbp.Abp.GraphQL.Application.Contracts\EasyAbp.Abp.GraphQL.Application.Contracts.csproj" />
         <ProjectReference Include="..\EasyAbp.Abp.GraphQL.Provider.Shared\EasyAbp.Abp.GraphQL.Provider.Shared.csproj" />
     </ItemGroup>
