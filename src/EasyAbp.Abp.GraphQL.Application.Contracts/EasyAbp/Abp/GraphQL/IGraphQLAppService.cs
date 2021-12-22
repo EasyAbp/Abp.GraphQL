@@ -6,5 +6,5 @@ namespace EasyAbp.Abp.GraphQL;
 
 public interface IGraphQLAppService : IApplicationService
 {
-    Task<string> ExecuteAsync(GraphQLExecutionInput input);
+    Task<GraphQLExecutionOutput> ExecuteAsync(GraphQLExecutionInput input);
 }

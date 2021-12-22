@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using GraphQL;
+using GraphQL.SystemTextJson;
 using GraphQL.Validation.Complexity;
 using Volo.Abp.DependencyInjection;
 
@@ -23,11 +26,20 @@ public class GraphQLDotnetGraphQLQueryProvider : IGraphQLQueryProvider, ITransie
         _schemaContainer = schemaContainer;
     }
     
-    public virtual async Task<string> ExecuteAsync(string operationName, string query, Dictionary<string, object> variables)
+    public virtual async Task<Dictionary<string, object>> ExecuteAsync(string operationName, string query, Dictionary<string, object> variables)
     {
         var schema = await _schemaContainer.GetAsync(operationName);
-            
-        var gInputs = variables.ToInputs();
+        
+        foreach (var pair in variables)
+        {
+            if (pair.Value is JsonElement)
+            {
+                variables[pair.Key] = pair.Value.ToString().ToInputs();
+            }
+        }
+        
+        var gInputs = new Inputs(variables);
+
         var queryToExecute = query;
 
         var result = await _executer.ExecuteAsync(_ =>
@@ -46,6 +58,12 @@ public class GraphQLDotnetGraphQLQueryProvider : IGraphQLQueryProvider, ITransie
             throw result.Errors.First();
         }
 
-        return await _writer.WriteToStringAsync(result);
+        using var memoryStream = new MemoryStream();
+
+        await _writer.WriteAsync(memoryStream, result);
+
+        memoryStream.Seek(0, SeekOrigin.Begin);
+
+        return await JsonSerializer.DeserializeAsync<Dictionary<string, object>>(memoryStream);
     }
 }

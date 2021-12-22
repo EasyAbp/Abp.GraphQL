@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text.Json;
 using Shouldly;
 
@@ -31,6 +32,19 @@ public static class AssertionExtensions
     public static void ShouldBeCrossPlatJson(this string actualJson, string expectedJson)
     {
         using var actualJsonDoc = JsonDocument.Parse(Normalize(actualJson));
+        using var expectedJsonDoc = JsonDocument.Parse(Normalize(expectedJson));
+        JsonSerializer.Serialize(actualJsonDoc.RootElement).ShouldBe(JsonSerializer.Serialize(expectedJsonDoc.RootElement));
+    }
+    
+    /// <summary>
+    /// Compares two JSON strings after normalizing line breaks and parsing then writing them back out
+    /// to ignore any whitespace differences.
+    /// </summary>
+    /// <param name="actualJson">Actual value.</param>
+    /// <param name="expectedJson">Expected value.</param>
+    public static void ShouldBeCrossPlatJson(this Dictionary<string, object> actualJson, string expectedJson)
+    {
+        using var actualJsonDoc = JsonDocument.Parse(Normalize(JsonSerializer.Serialize(actualJson)));
         using var expectedJsonDoc = JsonDocument.Parse(Normalize(expectedJson));
         JsonSerializer.Serialize(actualJsonDoc.RootElement).ShouldBe(JsonSerializer.Serialize(expectedJsonDoc.RootElement));
     }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using EasyAbp.Abp.GraphQL.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Volo.Abp;
@@ -7,7 +8,7 @@ namespace EasyAbp.Abp.GraphQL;
 
 [RemoteService(Name = GraphQLRemoteServiceConsts.RemoteServiceName)]
 [Route("/graphql")]
-public class GraphQLController : GraphQLControllerBase, IGraphQLAppService
+public class GraphQLController : GraphQLControllerBase
 {
     private readonly IGraphQLAppService _service;
 
@@ -18,8 +19,8 @@ public class GraphQLController : GraphQLControllerBase, IGraphQLAppService
     
     [HttpPost]
     [Route("")]
-    public virtual Task<string> ExecuteAsync(GraphQLExecutionInput input)
+    public virtual async Task<GraphQLExecutionOutput> ExecuteAsync(GraphQLExecutionInput input)
     {
-        return _service.ExecuteAsync(input);
+        return await _service.ExecuteAsync(input);
     }
 }

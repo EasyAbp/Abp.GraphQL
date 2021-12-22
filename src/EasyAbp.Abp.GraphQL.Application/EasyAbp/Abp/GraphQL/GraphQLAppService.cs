@@ -12,8 +12,9 @@ public class GraphQLAppService : GraphQLAppServiceBase, IGraphQLAppService
         _queryProvider = queryProvider;
     }
         
-    public virtual async Task<string> ExecuteAsync(GraphQLExecutionInput input)
+    public virtual async Task<GraphQLExecutionOutput> ExecuteAsync(GraphQLExecutionInput input)
     {
-        return await _queryProvider.ExecuteAsync(input.OperationName, input.Query, input.Variables);
+        return new GraphQLExecutionOutput(
+            await _queryProvider.ExecuteAsync(input.OperationName, input.Query, input.Variables));
     }
 }
