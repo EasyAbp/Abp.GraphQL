@@ -1,10 +1,8 @@
 using System.Threading.Tasks;
 using EasyAbp.Abp.GraphQL.Dtos;
-using Microsoft.AspNetCore.Authorization;
 
 namespace EasyAbp.Abp.GraphQL;
 
-[AllowAnonymous]
 public class GraphQLAppService : GraphQLAppServiceBase, IGraphQLAppService
 {
     private readonly IGraphQLQueryProvider _queryProvider;

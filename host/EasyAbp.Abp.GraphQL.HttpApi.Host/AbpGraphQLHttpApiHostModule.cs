@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using StackExchange.Redis;
 using Microsoft.OpenApi.Models;
 using Volo.Abp;
+using Volo.Abp.AspNetCore.Mvc.AntiForgery;
 using Volo.Abp.AspNetCore.Mvc.UI.MultiTenancy;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic;
 using Volo.Abp.AspNetCore.Serilog;
@@ -159,6 +160,12 @@ public class AbpGraphQLHttpApiHostModule : AbpModule
         Configure<RazorPagesOptions>(options =>
         {
             //Configure authorization.
+        });
+        
+        Configure<AbpAntiForgeryOptions>(options =>
+        {
+            options.AutoValidateFilter =
+                type => type.Namespace != null && !type.Namespace.StartsWith("EasyAbp.Abp.GraphQL");
         });
     }
 
