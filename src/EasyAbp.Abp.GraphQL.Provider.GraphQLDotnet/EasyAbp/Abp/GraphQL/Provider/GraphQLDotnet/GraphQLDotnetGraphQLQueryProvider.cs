@@ -25,13 +25,14 @@ public class GraphQLDotnetGraphQLQueryProvider : IGraphQLQueryProvider, ITransie
         _executer = executer;
         _schemaContainer = schemaContainer;
     }
-    
-    public virtual async Task<Dictionary<string, object>> ExecuteAsync(string operationName, string query, Dictionary<string, object> variables)
+
+    public virtual async Task<Dictionary<string, object>> ExecuteAsync(string operationName, string query,
+        Dictionary<string, object> variables, string defaultSchemaName = null)
     {
-        var schema = await _schemaContainer.GetOrDefaultAsync(operationName);
-        
+        var schema = await _schemaContainer.GetOrDefaultAsync(operationName, defaultSchemaName);
+
         variables ??= new Dictionary<string, object>();
-        
+
         foreach (var pair in variables)
         {
             if (pair.Value is JsonElement)
@@ -39,7 +40,7 @@ public class GraphQLDotnetGraphQLQueryProvider : IGraphQLQueryProvider, ITransie
                 variables[pair.Key] = pair.Value.ToString().ToInputs();
             }
         }
-        
+
         var gInputs = new Inputs(variables);
 
         var queryToExecute = query;

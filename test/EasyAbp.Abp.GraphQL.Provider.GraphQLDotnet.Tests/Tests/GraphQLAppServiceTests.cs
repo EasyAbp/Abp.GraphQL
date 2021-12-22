@@ -12,24 +12,19 @@ namespace EasyAbp.Abp.GraphQL.Tests;
 public class GraphQLAppServiceTests : GraphQLProviderGraphQLDotnetTestBase
 {
     [Fact]
-    public async Task Should_Get_A_Book_With_Name()
+    public async Task Should_Get_A_Book_Without_OperationName()
     {
         var graphQlAppService = ServiceProvider.GetRequiredService<IGraphQLAppService>();
 
         var result = await graphQlAppService.ExecuteAsync(new GraphQLExecutionInput
         {
-            OperationName = "Book",
             Query = @"
-            query Book($id: ID!) {
-                book(id: $id) {
+            query {
+                book(id: ""CA2EBE5D-D0DC-4D63-A77A-46FF520AEC44"") {
                     name
                 }
-            }",
-            Variables = new Dictionary<string, object>(new List<KeyValuePair<string, object>>
-            {
-                new("id", "CA2EBE5D-D0DC-4D63-A77A-46FF520AEC44")
-            })
-        });
+            }"
+        }, "Book");
         
         result.ShouldBeCrossPlatJson(@"{
             ""data"": {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GraphQL.Types;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Options;
 using Volo.Abp.DependencyInjection;
 
@@ -10,14 +11,19 @@ namespace EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet;
 
 public class SchemaContainer : ISchemaContainer, ISingletonDependency
 {
+    protected ISchema DefaultSchema { get; set; }
+    
     protected Dictionary<string, ISchema> Schemas { get; set; }
 
     public SchemaContainer(
         IOptions<AbpGraphQLOptions> options,
         IServiceProvider serviceProvider,
-        IEnumerable<ISchema> schemas)
+        IEnumerable<ISchema> customSchemas)
     {
-        Schemas = schemas.ToDictionary(
+        DefaultSchema = new Schema();
+        DefaultSchema.Query = new EmptyQuery();
+
+        Schemas = customSchemas.ToDictionary(
             keySelector: schema => schema.GetType().Name.RemovePostFix("Schema"),
             elementSelector: schema => schema);
 
@@ -31,16 +37,12 @@ public class SchemaContainer : ISchemaContainer, ISingletonDependency
 
             Schemas.Add(configuration.SchemaName, (ISchema)schema);
         }
-
-        var introspectionSchema = new Schema(serviceProvider);
-        introspectionSchema.Query = new EmptyQuery();
-        Schemas.Add("IntrospectionQuery", introspectionSchema);
     }
 
-    public virtual Task<ISchema> GetOrDefaultAsync(string schemaName)
+    public virtual Task<ISchema> GetOrDefaultAsync(string schemaName, string specifiedDefaultSchemaName = null)
     {
-        return Task.FromResult(schemaName != null && Schemas.ContainsKey(schemaName)
+        return Task.FromResult(!schemaName.IsNullOrEmpty() && Schemas.ContainsKey(schemaName)
             ? Schemas[schemaName]
-            : Schemas["IntrospectionQuery"]);
+            : specifiedDefaultSchemaName != null ? Schemas[specifiedDefaultSchemaName] : DefaultSchema);
     }
 }
