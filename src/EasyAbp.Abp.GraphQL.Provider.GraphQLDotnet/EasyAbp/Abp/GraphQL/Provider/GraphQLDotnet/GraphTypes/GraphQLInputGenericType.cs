@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet.AstValueNodes;
+using GraphQL.Language.AST;
 using GraphQL.Types;
 
 namespace EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet.GraphTypes;
@@ -10,7 +13,9 @@ namespace EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet.GraphTypes;
 /// </summary>
 public class GraphQLInputGenericType<T> : InputObjectGraphType<T> where T : class
 {
-    GraphQLGenericTypeMapper _typeMapper = new GraphQLGenericTypeMapper();
+    private readonly GraphQLGenericTypeMapper _typeMapper = new();
+
+    private Dictionary<string, Type> PropertiesAstNodeType { get; } = new();
 
     public GraphQLInputGenericType()
     {
@@ -25,7 +30,11 @@ public class GraphQLInputGenericType<T> : InputObjectGraphType<T> where T : clas
 
         genericType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
             .ToList()
-            .ForEach(pi => EmitField(pi));
+            .ForEach(pi =>
+            {
+                EmitField(pi);
+                PropertiesAstNodeType[pi.Name] = AstNodeTypeHelper.ToAstValueNodeType(pi.PropertyType, true);
+            });
     }
 
     private void EmitField(PropertyInfo propertyInfo)
@@ -153,5 +162,32 @@ public class GraphQLInputGenericType<T> : InputObjectGraphType<T> where T : clas
                 default: Field(_typeMapper.ResolveGraphType(propertyInfo.PropertyType, isInput: true), propertyInfo.Name); break;
             }
         }
+    }
+    
+    public override IValue ToAST(object value)
+    {
+        if (value == null)
+        {
+            return new NullValue();
+        }
+        
+        var fields = new List<ObjectField>();
+        
+        foreach (var propertyInfo in value.GetType().GetProperties())
+        {
+            var propertyValue = propertyInfo.GetValue(value);
+
+            if (propertyValue is not null)
+            {
+                fields.Add(new ObjectField(propertyInfo.Name,
+                    (IValue)Activator.CreateInstance(PropertiesAstNodeType[propertyInfo.Name], propertyValue)));
+            }
+            else
+            {
+                fields.Add(new ObjectField(propertyInfo.Name, new NullValue()));
+            }
+        }
+
+        return new ObjectValue(fields);
     }
 }

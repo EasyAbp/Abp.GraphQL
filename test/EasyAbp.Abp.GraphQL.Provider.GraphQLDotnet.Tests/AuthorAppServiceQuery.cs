@@ -29,18 +29,18 @@ public class AuthorAppServiceQuery :
 
         FieldAsync<GraphQLGenericType<AuthorDto>>(entityName,
             arguments: new QueryArguments(
-                new QueryArgument(typeof(NonNullGraphType<IdGraphType>)) { Name = "id" }
-            ),
+                new QueryArgument(typeof(NonNullGraphType<IdGraphType>)) { Name = "id" }),
             resolve: async context =>
                 await readOnlyAppService.GetAsync(context.GetArgument<int>("id"))
         );
 
         FieldAsync<PagedResultDtoType<AuthorDto>>($"{entityName}List",
             arguments: new QueryArguments(
-                new QueryArgument<NonNullGraphType<GraphQLInputGenericType<PagedAndSortedResultRequestDto>>> { Name = "input" }
-            ),
+                new QueryArgument<GraphQLInputGenericType<PagedAndSortedResultRequestDto>>
+                    { Name = "input", DefaultValue = Activator.CreateInstance<PagedAndSortedResultRequestDto>() }),
             resolve: async context =>
-                await readOnlyAppService.GetListAsync(context.GetArgument<PagedAndSortedResultRequestDto>("input")));
+                await readOnlyAppService.GetListAsync(context.GetArgument<PagedAndSortedResultRequestDto>("input"))
+        );
             
         // An extra field.
         Field<StringGraphType>("ping", resolve: _ => "pong");
