@@ -10,9 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using EasyAbp.Abp.GraphQL.MultiTenancy;
 using EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet;
-using GraphQL.Server.Ui.Altair;
-using GraphQL.Server.Ui.GraphiQL;
-using GraphQL.Server.Ui.Voyager;
+using EasyAbp.Abp.GraphQL.Web;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using StackExchange.Redis;
 using Microsoft.OpenApi.Models;
@@ -51,11 +49,14 @@ namespace EasyAbp.Abp.GraphQL;
     typeof(AbpSettingManagementEntityFrameworkCoreModule),
     typeof(AbpAspNetCoreSerilogModule),
     typeof(AbpSwashbuckleModule),
-    typeof(AbpAspNetCoreMvcUiBasicThemeModule)
+    typeof(AbpAspNetCoreMvcUiBasicThemeModule),
+    typeof(AbpGraphQLWebAltairModule),
+    typeof(AbpGraphQLWebGraphiQLModule),
+    typeof(AbpGraphQLWebPlaygroundModule),
+    typeof(AbpGraphQLWebVoyagerModule)
 )]
 public class AbpGraphQLHttpApiHostModule : AbpModule
 {
-
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         var hostingEnvironment = context.Services.GetHostingEnvironment();
@@ -170,6 +171,11 @@ public class AbpGraphQLHttpApiHostModule : AbpModule
             options.AutoValidateFilter =
                 type => type.Namespace != null && !type.Namespace.StartsWith("EasyAbp.Abp.GraphQL");
         });
+        
+        Configure<AbpGraphiQLOptions>(options =>
+        {
+            // options.UiBasicPath = "/myPath";
+        });
     }
 
     public override void OnApplicationInitialization(ApplicationInitializationContext context)
@@ -211,26 +217,5 @@ public class AbpGraphQLHttpApiHostModule : AbpModule
         app.UseAuditing();
         app.UseAbpSerilogEnrichers();
         app.UseConfiguredEndpoints();
-        
-        // Use GraphQL UIs:
-        app.UseGraphQLPlayground();
-        app.UseGraphQLGraphiQL();
-        app.UseGraphQLAltair();
-        app.UseGraphQLVoyager();
-        
-        app.UseGraphQLGraphiQL(new GraphiQLOptions
-        {
-            GraphQLEndPoint = "/graphql/Book"
-        }, "/ui/graphiql/Book");
-        
-        app.UseGraphQLAltair(new AltairOptions
-        {
-            GraphQLEndPoint = "/graphql/Book"
-        }, "/ui/altair/Book");
-
-        app.UseGraphQLVoyager(new VoyagerOptions
-        {
-            GraphQLEndPoint = "/graphql/Book"
-        }, "/ui/voyager/Book");
     }
 }

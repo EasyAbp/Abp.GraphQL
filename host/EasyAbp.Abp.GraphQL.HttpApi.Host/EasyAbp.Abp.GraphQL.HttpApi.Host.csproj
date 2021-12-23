@@ -10,10 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="GraphQL.Server.Ui.Altair" Version="$(GraphQLDotnetServerUiVersion)" />
-    <PackageReference Include="GraphQL.Server.Ui.GraphiQL" Version="$(GraphQLDotnetServerUiVersion)" />
-    <PackageReference Include="GraphQL.Server.Ui.Playground" Version="$(GraphQLDotnetServerUiVersion)" />
-    <PackageReference Include="GraphQL.Server.Ui.Voyager" Version="$(GraphQLDotnetServerUiVersion)" />
     <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
     <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
     <PackageReference Include="IdentityModel" Version="5.1.0" />
@@ -37,6 +33,10 @@
     <ProjectReference Include="..\..\src\EasyAbp.Abp.GraphQL.HttpApi\EasyAbp.Abp.GraphQL.HttpApi.csproj" />
     <ProjectReference Include="..\..\src\EasyAbp.Abp.GraphQL.Application\EasyAbp.Abp.GraphQL.Application.csproj" />
     <ProjectReference Include="..\..\src\EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet\EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet.csproj" />
+    <ProjectReference Include="..\..\src\EasyAbp.Abp.GraphQL.Web.Altair\EasyAbp.Abp.GraphQL.Web.Altair.csproj" />
+    <ProjectReference Include="..\..\src\EasyAbp.Abp.GraphQL.Web.GraphiQL\EasyAbp.Abp.GraphQL.Web.GraphiQL.csproj" />
+    <ProjectReference Include="..\..\src\EasyAbp.Abp.GraphQL.Web.Playground\EasyAbp.Abp.GraphQL.Web.Playground.csproj" />
+    <ProjectReference Include="..\..\src\EasyAbp.Abp.GraphQL.Web.Voyager\EasyAbp.Abp.GraphQL.Web.Voyager.csproj" />
     <ProjectReference Include="..\EasyAbp.Abp.GraphQL.Host.Shared\EasyAbp.Abp.GraphQL.Host.Shared.csproj" />
   </ItemGroup>
 
