@@ -29,7 +29,7 @@ public class AuthorAppServiceQuery :
 
         FieldAsync<GraphQLGenericType<AuthorDto>>(entityName,
             arguments: new QueryArguments(
-                new QueryArgument(typeof(NonNullGraphType<IdGraphType>)) { Name = "id" }),
+                new QueryArgument(typeof(NonNullGraphType<IntGraphType>)) { Name = "id" }),
             resolve: async context =>
                 await readOnlyAppService.GetAsync(context.GetArgument<int>("id"))
         );

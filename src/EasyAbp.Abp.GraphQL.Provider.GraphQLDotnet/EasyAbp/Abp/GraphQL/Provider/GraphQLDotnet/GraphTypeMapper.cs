@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
+using System.Reflection;
+using EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet.GraphTypes;
 using GraphQL.Types;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Reflection;
 
 namespace EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet;
 
-public class GraphTypeMapper : IGraphTypeMapper, ITransientDependency
+public static class GraphTypeMapper
 {
     private static readonly Dictionary<Type, Type> BuiltInScalarMappings = new()
     {
@@ -26,7 +29,7 @@ public class GraphTypeMapper : IGraphTypeMapper, ITransientDependency
 #endif
         [typeof(DateTimeOffset)] = typeof(DateTimeOffsetGraphType),
         [typeof(TimeSpan)] = typeof(TimeSpanSecondsGraphType),
-        [typeof(Guid)] = typeof(IdGraphType),
+        [typeof(Guid)] = typeof(GuidGraphType),
         [typeof(short)] = typeof(ShortGraphType),
         [typeof(ushort)] = typeof(UShortGraphType),
         [typeof(ulong)] = typeof(ULongGraphType),
@@ -35,22 +38,47 @@ public class GraphTypeMapper : IGraphTypeMapper, ITransientDependency
         [typeof(sbyte)] = typeof(SByteGraphType),
         [typeof(Uri)] = typeof(UriGraphType),
     };
+
+    public static bool IsBuiltInScalar(Type clrType)
+    {
+        return BuiltInScalarMappings.ContainsKey(clrType);
+    }
     
-    public virtual Type GetGraphType(Type clrType)
+    public static Type GetGraphType(Type clrType, bool isInput = false, bool autoNonNull = false)
     {
         var type = clrType.GetFirstGenericArgumentIfNullable();
 
-        var graphType = BuiltInScalarMappings.ContainsKey(type)
+        var graphType = IsBuiltInScalar(type)
             ? BuiltInScalarMappings[type]
-            : GetGraphTypeOfNonPrimitiveType(clrType);
+            : GetGraphTypeOfNonBuiltInType(type, isInput);
 
-        return clrType.GetGenericTypeDefinition() == typeof(Nullable<>)
-            ? graphType
-            : typeof(NonNullGraphType).MakeGenericType(graphType);
+        if (graphType == typeof(StringGraphType))
+        {
+            return graphType;
+        }
+        
+        return autoNonNull && isInput && !TypeHelper.IsNullable(clrType)
+            ? typeof(NonNullGraphType<>).MakeGenericType(graphType)
+            : graphType;
     }
     
-    protected virtual Type GetGraphTypeOfNonPrimitiveType(Type entityPropertyType)
+    private static Type GetGraphTypeOfNonBuiltInType(Type type, bool isInput = false)
     {
-        throw new NotImplementedException();
+        if (type.IsEnum)
+        {
+            return typeof(IntGraphType);
+        }
+        
+        if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+        {
+            return isInput ? typeof(GraphQLInputGenericType<IDictionary<string, object>>) : typeof(StringGraphType);
+        }
+
+        var graphType = Assembly.GetAssembly(typeof(ISchema)).GetTypes()
+            .FirstOrDefault(t => t.Name == $"{type.Name}Type" && t.IsAssignableTo<IGraphType>());
+
+        return graphType ?? (isInput
+            ? typeof(GraphQLInputGenericType<>).MakeGenericType(type)
+            : typeof(GraphQLGenericType<>).MakeGenericType(type));
     }
 }

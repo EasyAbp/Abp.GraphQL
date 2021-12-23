@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using EasyAbp.Abp.GraphQL.Books.Dtos;
+using EasyAbp.Abp.GraphQL.Citys.Dtos;
 using EasyAbp.Abp.GraphQL.Dtos;
 using GraphQL.SystemTextJson;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,7 +45,7 @@ public class GraphQLAppServiceTests : GraphQLProviderGraphQLDotnetTestBase
         {
             OperationName = "Author",
             Query = @"
-            query Author($id: ID!) {
+            query Author($id: Int!) {
                 author(id: $id) {
                     name
                 }
@@ -65,6 +66,36 @@ public class GraphQLAppServiceTests : GraphQLProviderGraphQLDotnetTestBase
     }
     
     [Fact]
+    public async Task Should_Get_A_City_With_Custom_Type_Id()
+    {
+        var graphQlAppService = ServiceProvider.GetRequiredService<IGraphQLAppService>();
+        var jsonSerializer = ServiceProvider.GetRequiredService<IJsonSerializer>();
+
+        var result = await graphQlAppService.ExecuteAsync(new GraphQLExecutionInput
+        {
+            OperationName = "City",
+            Query = @"
+            query City($id: CityKeyInput!) {
+                city(id: $id) {
+                    name
+                }
+            }",
+            Variables = new Dictionary<string, object>(new List<KeyValuePair<string, object>>
+            {
+                new("id", jsonSerializer.Serialize(new CityKey("China", "Shenzhen")).ToInputs())
+            })
+        });
+        
+        result.ShouldBeCrossPlatJson(@"{
+            ""data"": {
+                ""city"": {
+                    ""name"": ""Shenzhen""
+                }
+            }
+        }");
+    }
+    
+    [Fact]
     public async Task Should_Get_A_Book_With_Author()
     {
         var graphQlAppService = ServiceProvider.GetRequiredService<IGraphQLAppService>();
@@ -73,7 +104,7 @@ public class GraphQLAppServiceTests : GraphQLProviderGraphQLDotnetTestBase
         {
             OperationName = "Book",
             Query = @"
-            query Book($id: ID!) {
+            query Book($id: Guid!) {
                 book(id: $id) {
                     name,
                     author {
@@ -108,7 +139,7 @@ public class GraphQLAppServiceTests : GraphQLProviderGraphQLDotnetTestBase
         {
             OperationName = "Book",
             Query = @"
-            query Book($id: ID!) {
+            query Book($id: Guid!) {
                 book(id: $id) {
                     name,
                     tags
@@ -142,7 +173,7 @@ public class GraphQLAppServiceTests : GraphQLProviderGraphQLDotnetTestBase
         {
             OperationName = "Book",
             Query = @"
-            query Book($id: ID!) {
+            query Book($id: Guid!) {
                 book(id: $id) {
                     name,
                     sponsors {

@@ -29,8 +29,7 @@ public class AppServiceQuery<TAppService, TGetOutputDto, TGetListOutputDto, TKey
             (IReadOnlyAppService<TGetOutputDto, TGetListOutputDto, TKey, TGetListInput>)appService;
 
         FieldAsync<GraphQLGenericType<TGetOutputDto>>(entityName,
-            arguments: new QueryArguments(
-                new QueryArgument(typeof(NonNullGraphType<IdGraphType>)) { Name = "id" }),
+            arguments: new QueryArguments(new QueryArgument(MakeGetInputType()) { Name = "id" }),
             resolve: async context =>
                 await readOnlyAppService.GetAsync(context.GetArgument<TKey>("id"))
         );
@@ -42,5 +41,10 @@ public class AppServiceQuery<TAppService, TGetOutputDto, TGetListOutputDto, TKey
             resolve: async context =>
                 await readOnlyAppService.GetListAsync(context.GetArgument<TGetListInput>("input"))
         );
+    }
+
+    private static Type MakeGetInputType()
+    {
+        return GraphTypeMapper.GetGraphType(typeof(TKey), true, true);
     }
 }
