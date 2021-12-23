@@ -6,6 +6,7 @@ using EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet.AstValueNodes;
 using GraphQL;
 using GraphQL.Language.AST;
 using GraphQL.Types;
+using Volo.Abp.Data;
 
 namespace EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet.GraphTypes;
 
@@ -49,11 +50,6 @@ public class GraphQLInputGenericType<T> : InputObjectGraphType<T> where T : clas
 
     private static string MakeName(Type type)
     {
-        if (type.IsAssignableToGenericType(typeof(IDictionary<,>)))
-        {
-            return "DictionaryInput";
-        }
-        
         var name = type.GetNamedType().Name;
         
         return name.EndsWith("Input") ? name : $"{name}Input";
@@ -61,15 +57,22 @@ public class GraphQLInputGenericType<T> : InputObjectGraphType<T> where T : clas
 
     private void EmitField(PropertyInfo propertyInfo)
     {
+        var isDictionary = propertyInfo.PropertyType.IsAssignableToGenericType(typeof(IDictionary<,>));
         var typeName = propertyInfo.PropertyType.Name;
-        if (!propertyInfo.PropertyType.Namespace.StartsWith("System"))
+        if (isDictionary || propertyInfo.PropertyType.Namespace != null && !propertyInfo.PropertyType.Namespace.StartsWith("System"))
         {
             if (propertyInfo.PropertyType.IsEnum)
                 Field(GraphTypeMapper.GetGraphType(propertyInfo.PropertyType, isInput: true), propertyInfo.Name, resolve: context => Convert.ToInt32(propertyInfo.GetValue(context.Source)));
             else
             {
                 var gqlType = Assembly.GetAssembly(typeof(ISchema)).GetTypes().FirstOrDefault(t => t.Name == $"{typeName}Type" && t.IsAssignableTo<IGraphType>());
-                gqlType ??= typeof(GraphQLInputGenericType<>).MakeGenericType(propertyInfo.PropertyType);
+
+                gqlType ??= isDictionary
+                    ? propertyInfo.PropertyType.IsAssignableTo<ExtraPropertyDictionary>()
+                        ? typeof(AbpExtraPropertyGraphType)
+                        : MakeDictionaryType(propertyInfo)
+                    : typeof(GraphQLInputGenericType<>).MakeGenericType(propertyInfo.PropertyType);
+                
                 Field(gqlType, propertyInfo.Name);
             }
         }
@@ -212,5 +215,14 @@ public class GraphQLInputGenericType<T> : InputObjectGraphType<T> where T : clas
         }
 
         return new ObjectValue(fields);
+    }
+    
+    private Type MakeDictionaryType(PropertyInfo propertyInfo)
+    {
+        var dictType = propertyInfo.PropertyType.GetGenericTypeAssignableTo(typeof(IDictionary<,>));
+
+        var args = dictType.GetGenericArguments();
+
+        return typeof(DictionaryGraphType<,>).MakeGenericType(args[0], args[1]);
     }
 }

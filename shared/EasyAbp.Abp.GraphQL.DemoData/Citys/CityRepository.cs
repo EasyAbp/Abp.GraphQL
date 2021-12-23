@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using EasyAbp.Abp.GraphQL.Citys.Dtos;
+using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Linq;
@@ -18,9 +19,19 @@ public class CityRepository : IRepository<CityDto>, ITransientDependency
 
     public CityRepository()
     {
+        var cityShenzhen = new CityDto(new CityKey("China", "Shenzhen"));
+
+        cityShenzhen.SetProperty("hello", "world");
+        cityShenzhen.SetProperty("friendIds", new List<int> { 1, 2, 3 });
+        cityShenzhen.AreaNumberNameMapping = new Dictionary<int, string>
+        {
+            { 1, "Nanshan" },
+            { 2, "Futian" }
+        };
+        
         DataList = new List<CityDto>
         {
-            new(new CityKey("China", "Shenzhen")),
+            cityShenzhen,
             new(new CityKey("Turkey", "Istanbul")),
             new(new CityKey("U.S.A", "New York")),
         };

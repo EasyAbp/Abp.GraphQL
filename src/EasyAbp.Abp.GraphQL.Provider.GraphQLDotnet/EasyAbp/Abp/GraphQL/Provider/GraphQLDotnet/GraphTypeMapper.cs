@@ -12,7 +12,7 @@ namespace EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet;
 
 public static class GraphTypeMapper
 {
-    private static readonly Dictionary<Type, Type> BuiltInScalarMappings = new()
+    public static readonly IReadOnlyDictionary<Type, Type> BuiltInScalarMappings = new Dictionary<Type, Type>
     {
         [typeof(int)] = typeof(IntGraphType),
         [typeof(long)] = typeof(LongGraphType),

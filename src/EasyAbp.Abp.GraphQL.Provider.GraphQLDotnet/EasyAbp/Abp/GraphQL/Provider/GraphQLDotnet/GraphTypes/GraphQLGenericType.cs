@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using GraphQL;
 using GraphQL.Types;
+using Volo.Abp.Data;
 
 namespace EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet.GraphTypes;
 
@@ -40,8 +41,9 @@ public class GraphQLGenericType<TModel> : ObjectGraphType<TModel> where TModel :
 
     private void EmitField(PropertyInfo propertyInfo)
     {
+        var isDictionary = propertyInfo.PropertyType.IsAssignableToGenericType(typeof(IDictionary<,>));
         var typeName = propertyInfo.PropertyType.Name;
-        if (!propertyInfo.PropertyType.Namespace.StartsWith("System"))
+        if (isDictionary || propertyInfo.PropertyType.Namespace != null && !propertyInfo.PropertyType.Namespace.StartsWith("System"))
         {
             if (propertyInfo.PropertyType.IsEnum)
                 Field(GraphTypeMapper.GetGraphType(propertyInfo.PropertyType, isInput: false), propertyInfo.Name, resolve: context => Convert.ToInt32(propertyInfo.GetValue(context.Source)));
@@ -49,7 +51,11 @@ public class GraphQLGenericType<TModel> : ObjectGraphType<TModel> where TModel :
             {
                 var gqlType = Assembly.GetAssembly(typeof(ISchema)).GetTypes().FirstOrDefault(t => t.Name == $"{typeName}Type" && t.IsAssignableTo<IGraphType>());
 
-                gqlType ??= typeof(GraphQLGenericType<>).MakeGenericType(propertyInfo.PropertyType);
+                gqlType ??= isDictionary
+                    ? propertyInfo.PropertyType.IsAssignableTo<ExtraPropertyDictionary>()
+                        ? typeof(AbpExtraPropertyGraphType)
+                        : MakeDictionaryType(propertyInfo)
+                    : typeof(GraphQLGenericType<>).MakeGenericType(propertyInfo.PropertyType);
                 
                 Field(gqlType, propertyInfo.Name);
             }
@@ -66,15 +72,6 @@ public class GraphQLGenericType<TModel> : ObjectGraphType<TModel> where TModel :
                     Field(listType, propertyInfo.Name);
                     break;
                 }
-                // case "Dictionary`1":
-                // {
-                //     var args = propertyInfo.PropertyType.GetGenericArguments();
-                //     var key = args[0];
-                //     var value = args[1];
-                //     var listType = typeof(ListGraphType<StringGraphType>);
-                //     Field(listType, propertyInfo.Name);
-                //     break;
-                // }
                 case nameof(Boolean): Field(GraphTypeMapper.GetGraphType(propertyInfo.PropertyType, isInput: false), propertyInfo.Name); break;
                 case nameof(Int32): Field(GraphTypeMapper.GetGraphType(propertyInfo.PropertyType, isInput: false), propertyInfo.Name); break;
                 case nameof(Int64): Field(GraphTypeMapper.GetGraphType(propertyInfo.PropertyType, isInput: false), propertyInfo.Name); break;
@@ -172,5 +169,14 @@ public class GraphQLGenericType<TModel> : ObjectGraphType<TModel> where TModel :
                 default: Field(GraphTypeMapper.GetGraphType(propertyInfo.PropertyType, isInput: false), propertyInfo.Name); break;
             }
         }
+    }
+
+    private Type MakeDictionaryType(PropertyInfo propertyInfo)
+    {
+        var dictType = propertyInfo.PropertyType.GetGenericTypeAssignableTo(typeof(IDictionary<,>));
+
+        var args = dictType.GetGenericArguments();
+
+        return typeof(DictionaryGraphType<,>).MakeGenericType(args[0], args[1]);
     }
 }

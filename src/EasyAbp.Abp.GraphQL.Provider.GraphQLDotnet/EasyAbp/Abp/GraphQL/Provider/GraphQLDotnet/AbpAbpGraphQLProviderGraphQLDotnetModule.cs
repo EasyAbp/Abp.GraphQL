@@ -20,10 +20,12 @@ public class AbpAbpGraphQLProviderGraphQLDotnetModule : AbpModule
 
         context.Services.TryAddTransient(typeof(GraphQLGenericType<>));
         context.Services.TryAddTransient(typeof(GraphQLInputGenericType<>));
-            
+
         context.Services.TryAddTransient(typeof(ListResultDtoType<>));
         context.Services.TryAddTransient(typeof(PagedResultDtoType<>));
-            
+        context.Services.TryAddTransient(typeof(AbpExtraPropertyGraphType));
+        context.Services.TryAddTransient(typeof(DictionaryGraphType<,>));
+
         context.Services.TryAddTransient(typeof(AppServiceQuery<,,,,>));
     }
 }

@@ -77,7 +77,9 @@ public class GraphQLAppServiceTests : GraphQLProviderGraphQLDotnetTestBase
             Query = @"
             query City($id: CityKeyInput!) {
                 city(id: $id) {
-                    name
+                    name,
+                    areaNumberNameMapping,
+                    extraProperties
                 }
             }",
             Variables = new Dictionary<string, object>(new List<KeyValuePair<string, object>>
@@ -89,7 +91,15 @@ public class GraphQLAppServiceTests : GraphQLProviderGraphQLDotnetTestBase
         result.ShouldBeCrossPlatJson(@"{
             ""data"": {
                 ""city"": {
-                    ""name"": ""Shenzhen""
+                    ""name"": ""Shenzhen"",
+                    ""areaNumberNameMapping"": {
+                        ""1"": ""Nanshan"",
+                        ""2"": ""Futian""
+                    },
+                    ""extraProperties"": {
+                        ""hello"": ""world"",
+                        ""friendIds"": [1, 2, 3]
+                    }
                 }
             }
         }");
