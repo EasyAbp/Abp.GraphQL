@@ -40,7 +40,7 @@ An ABP module that allows using application services by GraphQL. It also accepte
             typeof(AbpIdentityApplicationContractsModule).Assembly);
     });
     ```
-2. Configure the GraphQL UIs (if you just installed them).
+1. Configure the GraphQL UIs (if you just installed them).
     ```c#
     Configure<AbpAntiForgeryOptions>(options =>
     {
@@ -55,6 +55,59 @@ An ABP module that allows using application services by GraphQL. It also accepte
     });
     ```
 
+1. Now you can query your entities with GraphQL.
+   ```graphql
+   query {
+      book(id: "CA2EBE5D-D0DC-4D63-A77A-46FF520AEC44") {
+         name
+         author {
+            id
+            name
+         }
+      }
+   }
+   ```
+
+## Q&A
+
+### How to customize an auto-created AppService scheme?
+
+You can replace the AppServiceQuery class for an entity you want to customize, see [the demo](https://github.com/EasyAbp/Abp.GraphQL/blob/main/test/EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet.Tests/AuthorAppServiceQuery.cs).
+
+### How to create a schema myself?
+
+1. Create your schema.
+   ```c#
+   public class MyCustomSchema : Schema, ITransientDependency
+   {
+       public MySchema(IServiceProvider serviceProvider) : base(serviceProvider)
+       {
+           Query = serviceProvider.GetRequiredService<MyCustomQuery>();
+       }
+   }
+   ```
+2. Configure to map the `/MyCustom` path to MyCustomSchema for UIs (if you want).
+   ```c#
+   Configure<AbpEndpointRouterOptions>(options =>
+   {
+       options.EndpointConfigureActions.Add(builderContext =>
+       {
+           var uiOptions =
+               builderContext.ScopeServiceProvider.GetRequiredService<IOptions<AbpGraphiQLOptions>>().Value;
+   
+            var schemaUiOption = (GraphiQLOptions)uiOptions.Clone();
+            schemaUiOption.GraphQLEndPoint = schemaUiOption.GraphQLEndPoint.Value.EnsureEndsWith('/') + "MyCustom";
+            schemaUiOption.SubscriptionsEndPoint = schemaUiOption.SubscriptionsEndPoint.Value.EnsureEndsWith('/') + "MyCustom";
+   
+            builderContext.Endpoints.MapGraphQLGraphiQL(schemaUiOption,
+                uiOptions.UiBasicPath.RemovePreFix("/").EnsureEndsWith('/') + "MyCustom");
+       });
+   });
+   ```
+
 ## Road map
 
-Todo.
+- [x] Support Query.
+- [ ] Support Mutation.
+- [ ] Support Subscription.
+- [ ] Improve UI modules.
