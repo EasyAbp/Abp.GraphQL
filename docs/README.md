@@ -70,9 +70,11 @@ An ABP module that allows using application services by GraphQL. It also accepte
 
 ## Q&A
 
+The following contents are for the [graphql-dotnet provider](https://github.com/EasyAbp/Abp.GraphQL/tree/main/src/EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet), please go to graphql-dotnet's [GitHub repo](https://github.com/graphql-dotnet/graphql-dotnet) or [docs site](https://graphql-dotnet.github.io/) for more information.
+
 ### How to customize an auto-created AppService scheme?
 
-You can replace the AppServiceQuery class for an entity you want to customize, see [the demo](https://github.com/EasyAbp/Abp.GraphQL/blob/main/test/EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet.Tests/AuthorAppServiceQuery.cs).
+You can replace the AppServiceQuery class for an entity you want to customize, see [the demo](https://github.com/EasyAbp/Abp.GraphQL/blob/main/test/EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet.Tests/AuthorAppServiceQuery.cs#L15).
 
 ### How to create a schema myself?
 
