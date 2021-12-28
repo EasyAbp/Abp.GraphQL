@@ -4,6 +4,7 @@
 [![NuGet](https://img.shields.io/nuget/v/EasyAbp.Abp.GraphQL.Provider.Shared.svg?style=flat-square)](https://www.nuget.org/packages/EasyAbp.Abp.GraphQL.Provider.Shared)
 [![NuGet Download](https://img.shields.io/nuget/dt/EasyAbp.Abp.GraphQL.Provider.Shared.svg?style=flat-square)](https://www.nuget.org/packages/EasyAbp.Abp.GraphQL.Provider.Shared)
 [![GitHub stars](https://img.shields.io/github/stars/EasyAbp/Abp.GraphQL?style=social)](https://www.github.com/EasyAbp/Abp.GraphQL)
+![Discord Shield](https://discordapp.com/api/guilds/924946213713895445/widget.png?style=shield)
 
 An ABP module that allows using application services by GraphQL. It also accepted custom schemes and types you defined.
 
