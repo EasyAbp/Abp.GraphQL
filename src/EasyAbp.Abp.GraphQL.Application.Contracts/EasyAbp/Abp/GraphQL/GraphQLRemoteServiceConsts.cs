@@ -2,7 +2,7 @@
 
 public class GraphQLRemoteServiceConsts
 {
-    public const string RemoteServiceName = "AbpGraphQL";
+    public const string RemoteServiceName = "EasyAbpAbpGraphQL";
 
-    public const string ModuleName = "abpGraphQL";
+    public const string ModuleName = "easyAbpAbpGraphQL";
 }
