@@ -6,6 +6,7 @@ using EasyAbp.Abp.GraphQL.Authors.Dtos;
 using EasyAbp.Abp.GraphQL.Books;
 using EasyAbp.Abp.GraphQL.Books.Dtos;
 using EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet;
+using GraphQL;
 using GraphQL.SystemTextJson;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
@@ -67,6 +68,7 @@ public class GraphQLDotnetProviderTests : GraphQLProviderGraphQLDotnetTestBase
     {
         var queryProvider = ServiceProvider.GetRequiredService<GraphQLDotnetGraphQLQueryProvider>();
         var jsonSerializer = ServiceProvider.GetRequiredService<IJsonSerializer>();
+        var graphQlTextSerializer = ServiceProvider.GetRequiredService<IGraphQLTextSerializer>();
 
         var query = @"
         query IntrospectionQuery {
@@ -168,7 +170,7 @@ public class GraphQLDotnetProviderTests : GraphQLProviderGraphQLDotnetTestBase
 
         var result = await queryProvider.ExecuteAsync("IntrospectionQuery", query, new Dictionary<string, object>());
 
-        var resultToInputs = jsonSerializer.Serialize(result).ToInputs();
+        var resultToInputs = graphQlTextSerializer.Deserialize<Inputs>(jsonSerializer.Serialize(result)) ?? Inputs.Empty;
         
         resultToInputs.ShouldContainKey("data");
         resultToInputs["data"].ShouldNotBeNull();

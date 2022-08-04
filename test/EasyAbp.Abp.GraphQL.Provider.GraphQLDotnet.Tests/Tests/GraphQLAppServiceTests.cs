@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using EasyAbp.Abp.GraphQL.Books.Dtos;
 using EasyAbp.Abp.GraphQL.Citys.Dtos;
 using EasyAbp.Abp.GraphQL.Dtos;
-using GraphQL.SystemTextJson;
+using GraphQL;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.Json;
 using Xunit;
@@ -70,6 +70,7 @@ public class GraphQLAppServiceTests : GraphQLProviderGraphQLDotnetTestBase
     {
         var graphQlAppService = ServiceProvider.GetRequiredService<IGraphQLAppService>();
         var jsonSerializer = ServiceProvider.GetRequiredService<IJsonSerializer>();
+        var graphQlTextSerializer = ServiceProvider.GetRequiredService<IGraphQLTextSerializer>();
 
         var result = await graphQlAppService.ExecuteAsync(new GraphQLExecutionInput
         {
@@ -84,7 +85,7 @@ public class GraphQLAppServiceTests : GraphQLProviderGraphQLDotnetTestBase
             }",
             Variables = new Dictionary<string, object>(new List<KeyValuePair<string, object>>
             {
-                new("id", jsonSerializer.Serialize(new CityKey("China", "Shenzhen")).ToInputs())
+                new("id", graphQlTextSerializer.Deserialize<Inputs>(jsonSerializer.Serialize(new CityKey("China", "Shenzhen"))) ?? Inputs.Empty)
             })
         });
         
@@ -291,6 +292,7 @@ public class GraphQLAppServiceTests : GraphQLProviderGraphQLDotnetTestBase
     {
         var graphQlAppService = ServiceProvider.GetRequiredService<IGraphQLAppService>();
         var jsonSerializer = ServiceProvider.GetRequiredService<IJsonSerializer>();
+        var graphQlTextSerializer = ServiceProvider.GetRequiredService<IGraphQLTextSerializer>();
 
         var result = await graphQlAppService.ExecuteAsync(new GraphQLExecutionInput
         {
@@ -310,10 +312,10 @@ public class GraphQLAppServiceTests : GraphQLProviderGraphQLDotnetTestBase
             }",
             Variables = new Dictionary<string, object>(new List<KeyValuePair<string, object>>
             {
-                new("input", jsonSerializer.Serialize(new GetBookListInput
+                new("input", graphQlTextSerializer.Deserialize<Inputs>(jsonSerializer.Serialize(new GetBookListInput
                 {
                     Filter = "Book"
-                }).ToInputs())
+                })) ?? Inputs.Empty)
             })
         });
         

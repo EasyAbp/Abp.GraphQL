@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using GraphQL;
-using GraphQL.Language.AST;
 using GraphQL.Types;
+using GraphQLParser.AST;
 
 namespace EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet.GraphTypes;
 
@@ -24,10 +24,10 @@ public class DictionaryGraphType<TKey, TValue> : ScalarGraphType
         return ((IEnumerable<KeyValuePair<TKey, TValue>>)value).ToDictionary(x => x.Key, x => x.Value);
     }
 
-    public override object ParseLiteral(IValue value) => value switch
+    public override object ParseLiteral(GraphQLValue value) => value switch
     {
-        ObjectValue o => ParseValue(o.Value),
-        NullValue _ => ParseValue(null),
+        GraphQLObjectValue o => ParseValue(o),
+        GraphQLNullValue _ => ParseValue(null),
         _ => ThrowLiteralConversionError(value)
     };
 
@@ -46,9 +46,9 @@ public class DictionaryGraphType<TKey, TValue> : ScalarGraphType
         return false;
     }
 
-    public override IValue ToAST(object value)
+    public override GraphQLValue ToAST(object value)
     {
-        return new NullValue();
+        return new GraphQLNullValue();
     }
     
     private static string MakeName()

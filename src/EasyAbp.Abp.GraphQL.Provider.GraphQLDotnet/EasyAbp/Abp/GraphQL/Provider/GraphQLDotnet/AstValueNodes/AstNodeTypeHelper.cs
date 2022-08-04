@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Numerics;
-using GraphQL.Language.AST;
+using GraphQLParser.AST;
 using Volo.Abp.Reflection;
 
 namespace EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet.AstValueNodes;
@@ -13,32 +13,32 @@ public static class AstNodeTypeHelper
         
         if (targetType.Name == "List`1")
         {
-            return typeof(ListValue);
+            return typeof(GraphQLListValue);
         }
 
         if (targetType.IsEnum)
         {
-            return typeof(EnumValue);
+            return typeof(GraphQLEnumValue);
         }
         
         switch (targetType.Name)
         {
-            case nameof(Enum): return typeof(EnumValue);
+            case nameof(Enum): return typeof(GraphQLEnumValue);
             case nameof(Byte): return typeof(ByteValue);
             case nameof(Int16): return typeof(ShortValue);
-            case nameof(Int32): return typeof(IntValue);
-            case nameof(Int64): return typeof(LongValue);
-            case nameof(BigInteger): return typeof(BigIntValue);
+            case nameof(Int32): return typeof(GraphQLIntValue);
+            case nameof(Int64): return typeof(GraphQLIntValue);
+            case nameof(BigInteger): return typeof(GraphQLIntValue);
 
-            case nameof(Boolean): return typeof(BooleanValue);
+            case nameof(Boolean): return typeof(GraphQLBooleanValue);
             case nameof(DateTime): return typeof(DateTimeValue);
-            case nameof(Double): return typeof(FloatValue);
-            case nameof(Single): return typeof(FloatValue);
-            case nameof(Decimal): return typeof(DecimalValue);
+            case nameof(Double): return typeof(GraphQLFloatValue);
+            case nameof(Single): return typeof(GraphQLFloatValue);
+            case nameof(Decimal): return typeof(GraphQLFloatValue);
             case nameof(Guid): return typeof(GuidValue);
 
-            case nameof(String): return typeof(StringValue);
-            default: return typeof(ObjectValue);
+            case nameof(String): return typeof(GraphQLStringValue);
+            default: return typeof(GraphQLObjectValue);
         }
     }
 
