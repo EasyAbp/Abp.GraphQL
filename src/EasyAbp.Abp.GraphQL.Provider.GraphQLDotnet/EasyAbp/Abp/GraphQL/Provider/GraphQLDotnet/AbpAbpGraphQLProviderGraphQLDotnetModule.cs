@@ -15,8 +15,7 @@ public class AbpAbpGraphQLProviderGraphQLDotnetModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
-        context.Services.TryAddTransient(typeof(IDocumentExecuter), typeof(DocumentExecuter));
-        context.Services.AddGraphQL();
+        context.Services.AddGraphQL(builder => builder.AddSystemTextJson());
 
         context.Services.TryAddTransient(typeof(GraphQLGenericType<>));
         context.Services.TryAddTransient(typeof(GraphQLInputGenericType<>));

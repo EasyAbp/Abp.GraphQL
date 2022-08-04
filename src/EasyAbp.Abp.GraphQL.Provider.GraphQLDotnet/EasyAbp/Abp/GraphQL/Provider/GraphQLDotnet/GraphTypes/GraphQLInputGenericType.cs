@@ -4,8 +4,8 @@ using System.Linq;
 using System.Reflection;
 using EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet.AstValueNodes;
 using GraphQL;
-using GraphQL.Language.AST;
 using GraphQL.Types;
+using GraphQLParser.AST;
 using Volo.Abp.Data;
 
 namespace EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet.GraphTypes;
@@ -190,14 +190,14 @@ public class GraphQLInputGenericType<T> : InputObjectGraphType<T> where T : clas
         }
     }
     
-    public override IValue ToAST(object value)
+    public override GraphQLValue ToAST(object value)
     {
         if (value == null)
         {
-            return new NullValue();
+            return new GraphQLNullValue();
         }
         
-        var fields = new List<ObjectField>();
+        var fields = new List<GraphQLObjectField>();
         
         foreach (var propertyInfo in value.GetType().GetProperties())
         {
@@ -205,16 +205,27 @@ public class GraphQLInputGenericType<T> : InputObjectGraphType<T> where T : clas
 
             if (propertyValue is not null)
             {
-                fields.Add(new ObjectField(propertyInfo.Name,
-                    (IValue)Activator.CreateInstance(PropertiesAstNodeType[propertyInfo.Name], propertyValue)));
+                fields.Add(new GraphQLObjectField
+                {
+                    Name = new GraphQLName(propertyInfo.Name),
+                    Value = (GraphQLValue)Activator.CreateInstance(PropertiesAstNodeType[propertyInfo.Name],
+                        propertyValue)
+                });
             }
             else
             {
-                fields.Add(new ObjectField(propertyInfo.Name, new NullValue()));
+                fields.Add(new GraphQLObjectField
+                {
+                    Name = new GraphQLName(propertyInfo.Name),
+                    Value = new GraphQLNullValue()
+                });
             }
         }
 
-        return new ObjectValue(fields);
+        return new GraphQLObjectValue
+        {
+            Fields = fields
+        };
     }
     
     private Type MakeDictionaryType(PropertyInfo propertyInfo)

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using GraphQL.Language.AST;
 using GraphQL.Types;
+using GraphQLParser.AST;
 using Volo.Abp.Data;
 
 namespace EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet.GraphTypes;
@@ -21,10 +21,10 @@ public class AbpExtraPropertyGraphType : ScalarGraphType
         return new ExtraPropertyDictionary(dictionary);
     }
 
-    public override object ParseLiteral(IValue value) => value switch
+    public override object ParseLiteral(GraphQLValue value) => value switch
     {
-        ObjectValue o => ParseValue(o.Value),
-        NullValue _ => ParseValue(null),
+        GraphQLObjectValue o => ParseValue(o),
+        GraphQLNullValue _ => ParseValue(null),
         _ => ThrowLiteralConversionError(value)
     };
 
@@ -43,8 +43,8 @@ public class AbpExtraPropertyGraphType : ScalarGraphType
         return false;
     }
 
-    public override IValue ToAST(object value)
+    public override GraphQLValue ToAST(object value)
     {
-        return new NullValue();
+        return new GraphQLNullValue();
     }
 }

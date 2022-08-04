@@ -1,27 +1,24 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using GraphQL;
-using GraphQL.SystemTextJson;
-using GraphQL.Validation.Complexity;
 using Volo.Abp.DependencyInjection;
 
 namespace EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet;
 
 public class GraphQLDotnetGraphQLQueryProvider : IGraphQLQueryProvider, ITransientDependency
 {
-    private readonly IDocumentWriter _writer;
+    private readonly IGraphQLTextSerializer _serializer;
     private readonly IDocumentExecuter _executer;
     private readonly ISchemaContainer _schemaContainer;
 
     public GraphQLDotnetGraphQLQueryProvider(
-        IDocumentWriter writer,
+        IGraphQLTextSerializer serializer,
         IDocumentExecuter executer,
         ISchemaContainer schemaContainer)
     {
-        _writer = writer;
+        _serializer = serializer;
         _executer = executer;
         _schemaContainer = schemaContainer;
     }
@@ -37,7 +34,7 @@ public class GraphQLDotnetGraphQLQueryProvider : IGraphQLQueryProvider, ITransie
         {
             if (pair.Value is JsonElement)
             {
-                variables[pair.Key] = pair.Value.ToString().ToInputs();
+                variables[pair.Key] = _serializer.Deserialize<Inputs>(pair.Value.ToString()) ?? Inputs.Empty;
             }
         }
 
@@ -50,17 +47,15 @@ public class GraphQLDotnetGraphQLQueryProvider : IGraphQLQueryProvider, ITransie
             _.Schema = schema;
             _.Query = queryToExecute;
             _.OperationName = operationName;
-            _.Inputs = gInputs;
+            _.Variables = gInputs;
 #if DEBUG
             _.ThrowOnUnhandledException = true;
 #endif
-            _.ComplexityConfiguration = new ComplexityConfiguration { MaxDepth = 15 };
-
         });
 
         using var memoryStream = new MemoryStream();
 
-        await _writer.WriteAsync(memoryStream, result);
+        await _serializer.WriteAsync(memoryStream, result);
 
         memoryStream.Seek(0, SeekOrigin.Begin);
 
