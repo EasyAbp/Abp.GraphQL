@@ -27,17 +27,20 @@ namespace EasyAbp.Abp.GraphQL.Web
                     var schemeConfigurations = builderContext.ScopeServiceProvider
                         .GetRequiredService<IOptions<AbpGraphQLOptions>>().Value.AppServiceSchemes;
 
-                    builderContext.Endpoints.MapGraphQLAltair(uiOptions,
-                        uiOptions.UiBasicPath.RemovePostFix("/").RemovePostFix("/"));
-                    
+                    builderContext.Endpoints.MapGraphQLAltair(
+                        uiOptions.UiBasicPath.RemovePostFix("/").RemovePostFix("/"), uiOptions);
+
                     foreach (var schema in schemeConfigurations.GetConfigurations())
                     {
                         var schemaUiOption = (AltairOptions)uiOptions.Clone();
-                        schemaUiOption.GraphQLEndPoint = schemaUiOption.GraphQLEndPoint.Value.EnsureEndsWith('/') + schema.SchemaName;
-                        schemaUiOption.SubscriptionsEndPoint = schemaUiOption.SubscriptionsEndPoint.Value.EnsureEndsWith('/') + schema.SchemaName;
+                        schemaUiOption.GraphQLEndPoint = schemaUiOption.GraphQLEndPoint.EnsureEndsWith('/') +
+                                                         schema.SchemaName;
+                        schemaUiOption.SubscriptionsEndPoint =
+                            schemaUiOption.SubscriptionsEndPoint.EnsureEndsWith('/') + schema.SchemaName;
 
-                        builderContext.Endpoints.MapGraphQLAltair(schemaUiOption,
-                            uiOptions.UiBasicPath.RemovePreFix("/").EnsureEndsWith('/') + schema.SchemaName);
+                        builderContext.Endpoints.MapGraphQLAltair(
+                            uiOptions.UiBasicPath.RemovePreFix("/").EnsureEndsWith('/') + schema.SchemaName,
+                            schemaUiOption);
                     }
                 });
             });

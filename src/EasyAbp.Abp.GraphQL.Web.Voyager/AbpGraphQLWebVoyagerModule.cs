@@ -27,16 +27,18 @@ namespace EasyAbp.Abp.GraphQL.Web
                     var schemeConfigurations = builderContext.ScopeServiceProvider
                         .GetRequiredService<IOptions<AbpGraphQLOptions>>().Value.AppServiceSchemes;
 
-                    builderContext.Endpoints.MapGraphQLVoyager(uiOptions,
-                        uiOptions.UiBasicPath.RemovePostFix("/").RemovePostFix("/"));
-                    
+                    builderContext.Endpoints.MapGraphQLVoyager(
+                        uiOptions.UiBasicPath.RemovePostFix("/").RemovePostFix("/"), uiOptions);
+
                     foreach (var schema in schemeConfigurations.GetConfigurations())
                     {
                         var schemaUiOption = (VoyagerOptions)uiOptions.Clone();
-                        schemaUiOption.GraphQLEndPoint = schemaUiOption.GraphQLEndPoint.Value.EnsureEndsWith('/') + schema.SchemaName;
+                        schemaUiOption.GraphQLEndPoint = schemaUiOption.GraphQLEndPoint.EnsureEndsWith('/') +
+                                                         schema.SchemaName;
 
-                        builderContext.Endpoints.MapGraphQLVoyager(schemaUiOption,
-                            uiOptions.UiBasicPath.RemovePreFix("/").EnsureEndsWith('/') + schema.SchemaName);
+                        builderContext.Endpoints.MapGraphQLVoyager(
+                            uiOptions.UiBasicPath.RemovePreFix("/").EnsureEndsWith('/') + schema.SchemaName,
+                            schemaUiOption);
                     }
                 });
             });
