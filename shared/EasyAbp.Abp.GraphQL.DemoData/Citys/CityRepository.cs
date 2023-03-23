@@ -28,7 +28,7 @@ public class CityRepository : IRepository<CityDto>, ITransientDependency
             { 1, "Nanshan" },
             { 2, "Futian" }
         };
-        
+
         DataList = new List<CityDto>
         {
             cityShenzhen,
@@ -37,7 +37,8 @@ public class CityRepository : IRepository<CityDto>, ITransientDependency
         };
     }
 
-    public Task<List<CityDto>> GetListAsync(bool includeDetails = false, CancellationToken cancellationToken = new CancellationToken())
+    public Task<List<CityDto>> GetListAsync(bool includeDetails = false,
+        CancellationToken cancellationToken = new CancellationToken())
     {
         return Task.FromResult(DataList);
     }
@@ -47,7 +48,8 @@ public class CityRepository : IRepository<CityDto>, ITransientDependency
         return Task.FromResult((long)DataList.Count);
     }
 
-    public Task<List<CityDto>> GetPagedListAsync(int skipCount, int maxResultCount, string sorting, bool includeDetails = false,
+    public Task<List<CityDto>> GetPagedListAsync(int skipCount, int maxResultCount, string sorting,
+        bool includeDetails = false,
         CancellationToken cancellationToken = new CancellationToken())
     {
         return Task.FromResult(DataList.Skip(skipCount).Take(maxResultCount).ToList());
@@ -86,12 +88,14 @@ public class CityRepository : IRepository<CityDto>, ITransientDependency
 
     public IAsyncQueryableExecuter AsyncExecuter { get; }
 
-    public Task<CityDto> GetAsync(CityKey id, bool includeDetails = true, CancellationToken cancellationToken = new CancellationToken())
+    public Task<CityDto> GetAsync(CityKey id, bool includeDetails = true,
+        CancellationToken cancellationToken = new CancellationToken())
     {
         return Task.FromResult(DataList.Single(x => x.CountryName == id.CountryName && x.Name == id.Name));
     }
 
-    public Task<CityDto> FindAsync(CityKey id, bool includeDetails = true, CancellationToken cancellationToken = new CancellationToken())
+    public Task<CityDto> FindAsync(CityKey id, bool includeDetails = true,
+        CancellationToken cancellationToken = new CancellationToken())
     {
         return Task.FromResult(DataList.Find(x => x.CountryName == id.CountryName && x.Name == id.Name));
     }
@@ -145,6 +149,12 @@ public class CityRepository : IRepository<CityDto>, ITransientDependency
     }
 
     public Task DeleteAsync(Expression<Func<CityDto, bool>> predicate, bool autoSave = false,
+        CancellationToken cancellationToken = new CancellationToken())
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteDirectAsync(Expression<Func<CityDto, bool>> predicate,
         CancellationToken cancellationToken = new CancellationToken())
     {
         throw new NotImplementedException();

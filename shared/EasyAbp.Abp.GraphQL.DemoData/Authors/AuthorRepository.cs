@@ -26,7 +26,8 @@ public class AuthorRepository : IRepository<AuthorDto, int>, ITransientDependenc
         };
     }
 
-    public Task<List<AuthorDto>> GetListAsync(bool includeDetails = false, CancellationToken cancellationToken = new CancellationToken())
+    public Task<List<AuthorDto>> GetListAsync(bool includeDetails = false,
+        CancellationToken cancellationToken = new CancellationToken())
     {
         return Task.FromResult(DataList);
     }
@@ -36,7 +37,8 @@ public class AuthorRepository : IRepository<AuthorDto, int>, ITransientDependenc
         return Task.FromResult((long)DataList.Count);
     }
 
-    public Task<List<AuthorDto>> GetPagedListAsync(int skipCount, int maxResultCount, string sorting, bool includeDetails = false,
+    public Task<List<AuthorDto>> GetPagedListAsync(int skipCount, int maxResultCount, string sorting,
+        bool includeDetails = false,
         CancellationToken cancellationToken = new CancellationToken())
     {
         return Task.FromResult(DataList.Skip(skipCount).Take(maxResultCount).ToList());
@@ -74,12 +76,15 @@ public class AuthorRepository : IRepository<AuthorDto, int>, ITransientDependenc
     }
 
     public IAsyncQueryableExecuter AsyncExecuter { get; }
-    public Task<AuthorDto> GetAsync(int id, bool includeDetails = true, CancellationToken cancellationToken = new CancellationToken())
+
+    public Task<AuthorDto> GetAsync(int id, bool includeDetails = true,
+        CancellationToken cancellationToken = new CancellationToken())
     {
         return Task.FromResult(DataList.Single(x => x.Id == id));
     }
 
-    public Task<AuthorDto> FindAsync(int id, bool includeDetails = true, CancellationToken cancellationToken = new CancellationToken())
+    public Task<AuthorDto> FindAsync(int id, bool includeDetails = true,
+        CancellationToken cancellationToken = new CancellationToken())
     {
         return Task.FromResult(DataList.Find(x => x.Id == id));
     }
@@ -138,7 +143,14 @@ public class AuthorRepository : IRepository<AuthorDto, int>, ITransientDependenc
         throw new NotImplementedException();
     }
 
-    public Task DeleteAsync(int id, bool autoSave = false, CancellationToken cancellationToken = new CancellationToken())
+    public Task DeleteDirectAsync(Expression<Func<AuthorDto, bool>> predicate,
+        CancellationToken cancellationToken = new CancellationToken())
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteAsync(int id, bool autoSave = false,
+        CancellationToken cancellationToken = new CancellationToken())
     {
         throw new NotImplementedException();
     }
