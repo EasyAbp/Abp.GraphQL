@@ -14,6 +14,8 @@ namespace EasyAbp.Abp.GraphQL.Authors;
 [ExposeServices(typeof(IRepository<AuthorDto, int>))]
 public class AuthorRepository : IRepository<AuthorDto, int>, ITransientDependency
 {
+    public bool? IsChangeTrackingEnabled { get; } = null;
+
     private List<AuthorDto> DataList { get; }
 
     public AuthorRepository()

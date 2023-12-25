@@ -15,6 +15,8 @@ namespace EasyAbp.Abp.GraphQL.Books;
 [ExposeServices(typeof(IReadOnlyRepository<BookDto, Guid>))]
 public class BookRepository : IReadOnlyRepository<BookDto, Guid>, ITransientDependency
 {
+    public bool? IsChangeTrackingEnabled { get; } = null;
+
     private List<BookDto> DataList { get; }
 
     public BookRepository()

@@ -15,6 +15,8 @@ namespace EasyAbp.Abp.GraphQL.Citys;
 [ExposeServices(typeof(CityRepository), typeof(IRepository<CityDto>))]
 public class CityRepository : IRepository<CityDto>, ITransientDependency
 {
+    public bool? IsChangeTrackingEnabled { get; } = null;
+
     private List<CityDto> DataList { get; }
 
     public CityRepository()
