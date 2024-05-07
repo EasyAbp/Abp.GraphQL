@@ -9,6 +9,7 @@
         <ProjectReference Include="..\..\src\EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet\EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet.csproj" />
         <ProjectReference Include="..\EasyAbp.Abp.GraphQL.Application.Tests\EasyAbp.Abp.GraphQL.Application.Tests.csproj" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+        <ProjectReference Include="..\EasyAbp.Abp.GraphQL.Provider.Shared.Tests\EasyAbp.Abp.GraphQL.Provider.Shared.Tests.csproj" />
     </ItemGroup>
 
 </Project>

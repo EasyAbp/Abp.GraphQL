@@ -20,6 +20,41 @@ public class AbpGraphQLAppServiceSchemeConfigurations
         _scheme = new Dictionary<string, AbpGraphQLEntitySchemeConfiguration>();
     }
 
+    private static bool GetReadOnlyAppServiceTypeGenericArgument(
+        Type type,
+        out Type[] args
+    )
+    {
+        args = null;
+        if (!type.IsAssignableToGenericType(typeof(IReadOnlyAppService<,,,>)))
+        {
+            type = type.GetInterfaces()
+                .FirstOrDefault(i => i.IsAssignableToGenericType(typeof(IReadOnlyAppService<,,,>)));
+        }
+
+        if (type is null)
+        {
+            return false;
+        }
+
+        args = type.GetGenericArguments();
+
+        if (args.Length is 4 && type.Name.StartsWith("IReadOnlyAppService"))
+        {
+            return true;
+        }
+
+        foreach (var t in type.GetInterfaces())
+        {
+            if (GetReadOnlyAppServiceTypeGenericArgument(t, out args))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /// <summary>
     /// Configure by an Application.Contracts assembly.
     /// </summary>
@@ -39,26 +74,16 @@ public class AbpGraphQLAppServiceSchemeConfigurations
 
         foreach (var appServiceType in appServiceTypes)
         {
-            var readOnlyAppServiceType = appServiceType.GetInterfaces()
-                .FirstOrDefault(x => x.IsAssignableToGenericType(typeof(IReadOnlyAppService<,,,>)));
-
-            if (readOnlyAppServiceType == null)
+            if (!GetReadOnlyAppServiceTypeGenericArgument(appServiceType, out var args))
             {
                 continue;
             }
-            
-            var args = readOnlyAppServiceType.GetGenericArguments();
 
-            if (args.Length != 4)
-            {
-                continue;
-            }
-            
             var getOutputDtoType = args[0];
             var getListOutputDtoType = args[1];
             var keyType = args[2];
             var getListInputType = args[3];
-            
+
             var schemeName = schemeNamePrefix + getOutputDtoType.Name.RemovePostFix("Dto");
 
             configureAction ??= _ => { };

@@ -47,6 +47,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyAbp.Abp.GraphQL.Web.Alt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyAbp.Abp.GraphQL.Web.Voyager", "src\EasyAbp.Abp.GraphQL.Web.Voyager\EasyAbp.Abp.GraphQL.Web.Voyager.csproj", "{A85D651F-F1B1-495C-BA7B-B3D1A26697A6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyAbp.Abp.GraphQL.Provider.Shared.Tests", "test\EasyAbp.Abp.GraphQL.Provider.Shared.Tests\EasyAbp.Abp.GraphQL.Provider.Shared.Tests.csproj", "{A620AE17-4929-47CC-B59D-9C3D1A711526}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -125,6 +127,10 @@ Global
 		{A85D651F-F1B1-495C-BA7B-B3D1A26697A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A85D651F-F1B1-495C-BA7B-B3D1A26697A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A85D651F-F1B1-495C-BA7B-B3D1A26697A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A620AE17-4929-47CC-B59D-9C3D1A711526}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A620AE17-4929-47CC-B59D-9C3D1A711526}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A620AE17-4929-47CC-B59D-9C3D1A711526}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A620AE17-4929-47CC-B59D-9C3D1A711526}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -148,6 +154,7 @@ Global
 		{43DFC28D-C5F6-4883-998C-55E5B2426CA5} = {649A3FFA-182F-4E56-9717-E6A9A2BEC545}
 		{0CC56659-E3CF-4E4B-8D78-CD649EAA6088} = {649A3FFA-182F-4E56-9717-E6A9A2BEC545}
 		{A85D651F-F1B1-495C-BA7B-B3D1A26697A6} = {649A3FFA-182F-4E56-9717-E6A9A2BEC545}
+		{A620AE17-4929-47CC-B59D-9C3D1A711526} = {CCD2960C-23CC-4AB4-B84D-60C7AAA52F4D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4324B3B4-B60B-4E3C-91D8-59576B4E26DD}
