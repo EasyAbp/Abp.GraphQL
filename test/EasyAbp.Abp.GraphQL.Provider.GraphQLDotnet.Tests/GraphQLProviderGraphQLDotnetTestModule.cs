@@ -5,7 +5,8 @@ namespace EasyAbp.Abp.GraphQL;
 
 [DependsOn(
     typeof(AbpGraphQLApplicationTestModule),
-    typeof(AbpAbpGraphQLProviderGraphQLDotnetModule)
+    typeof(AbpAbpGraphQLProviderGraphQLDotnetModule),
+    typeof(GraphQLProviderSharedTestModule)
 )]
 public class GraphQLProviderGraphQLDotnetTestModule : AbpModule
 {
