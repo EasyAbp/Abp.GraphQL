@@ -9,22 +9,24 @@ namespace EasyAbp.Abp.GraphQL.Books.Dtos;
 public class BookDto : EntityDto<Guid>, IEntity<Guid>
 {
     public string Name { get; set; }
-        
+
+    public long Pages { get; set; }
+
     public List<string> Tags { get; set; }
 
     public AuthorDto Author { get; set; }
-        
+
     public List<Sponsor> Sponsors { get; set; }
 
     public BookDto()
     {
-            
     }
 
-    public BookDto(Guid id, string name, List<string> tags, AuthorDto author, List<Sponsor> sponsors)
+    public BookDto(Guid id, string name, long pages, List<string> tags, AuthorDto author, List<Sponsor> sponsors)
     {
         Id = id;
         Name = name;
+        Pages = pages;
         Tags = tags;
         Author = author;
         Sponsors = sponsors;
