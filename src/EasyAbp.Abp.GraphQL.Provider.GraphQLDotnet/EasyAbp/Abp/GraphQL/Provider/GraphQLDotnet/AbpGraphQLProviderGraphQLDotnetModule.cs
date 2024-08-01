@@ -1,7 +1,5 @@
 ﻿using EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet.GraphTypes;
 using GraphQL;
-using GraphQL.MicrosoftDI;
-using GraphQL.SystemTextJson;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Volo.Abp.Modularity;
 
@@ -11,7 +9,7 @@ namespace EasyAbp.Abp.GraphQL.Provider.GraphQLDotnet;
     typeof(AbpGraphQLApplicationContractsModule),
     typeof(AbpGraphQLProviderSharedModule)
 )]
-public class AbpAbpGraphQLProviderGraphQLDotnetModule : AbpModule
+public class AbpGraphQLProviderGraphQLDotnetModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {

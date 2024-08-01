@@ -38,7 +38,7 @@ namespace EasyAbp.Abp.GraphQL;
 [DependsOn(
     typeof(AbpGraphQLDemoDataModule),
     typeof(AbpGraphQLApplicationModule),
-    typeof(AbpAbpGraphQLProviderGraphQLDotnetModule),
+    typeof(AbpGraphQLProviderGraphQLDotnetModule),
     typeof(AbpGraphQLHttpApiModule),
     typeof(AbpAspNetCoreMvcUiMultiTenancyModule),
     typeof(AbpAutofacModule),
