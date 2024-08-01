@@ -7,8 +7,8 @@ using GraphQL;
 using GraphQL.Types;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.Application.Dtos;
-using Volo.Abp.Application.Services;
 using Volo.Abp.DependencyInjection;
+using Volo.Abp.Security.Claims;
 
 namespace EasyAbp.Abp.GraphQL;
 
@@ -19,19 +19,22 @@ public class AuthorAppServiceQuery :
     public AuthorAppServiceQuery(IServiceProvider serviceProvider)
     {
         const string entityName = "Author";
-            
-        Name = entityName + "Query";
 
-        var appService = serviceProvider.GetRequiredService<IAuthorAppService>();
-            
-        var readOnlyAppService =
-            (IReadOnlyAppService<AuthorDto, AuthorDto, int, PagedAndSortedResultRequestDto>)appService;
+        Name = entityName + "Query";
 
         FieldAsync<GraphQLGenericType<AuthorDto>>(entityName,
             arguments: new QueryArguments(
                 new QueryArgument(typeof(NonNullGraphType<IntGraphType>)) { Name = "id" }),
             resolve: async context =>
-                await readOnlyAppService.GetAsync(context.GetArgument<int>("id"))
+            {
+                using var scope = serviceProvider.CreateScope();
+                var principalAccessor = scope.ServiceProvider.GetRequiredService<ICurrentPrincipalAccessor>();
+                using var changePrincipal = principalAccessor.Change(context.User);
+
+                var service = serviceProvider.GetRequiredService<IAuthorAppService>();
+
+                return await service.GetAsync(context.GetArgument<int>("id"));
+            }
         );
 
         FieldAsync<PagedResultDtoType<AuthorDto>>($"{entityName}List",
@@ -39,9 +42,16 @@ public class AuthorAppServiceQuery :
                 new QueryArgument<GraphQLInputGenericType<PagedAndSortedResultRequestDto>>
                     { Name = "input", DefaultValue = Activator.CreateInstance<PagedAndSortedResultRequestDto>() }),
             resolve: async context =>
-                await readOnlyAppService.GetListAsync(context.GetArgument<PagedAndSortedResultRequestDto>("input"))
+            {
+                using var scope = serviceProvider.CreateScope();
+                var principalAccessor = scope.ServiceProvider.GetRequiredService<ICurrentPrincipalAccessor>();
+                using var changePrincipal = principalAccessor.Change(context.User);
+
+                var service = serviceProvider.GetRequiredService<IAuthorAppService>();
+                return await service.GetListAsync(context.GetArgument<PagedAndSortedResultRequestDto>("input"));
+            }
         );
-            
+
         // An extra field.
         Field<StringGraphType>("ping", resolve: _ => "pong");
     }
