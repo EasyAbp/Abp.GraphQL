@@ -62,7 +62,7 @@ public class GraphQLInputGenericType<T> : InputObjectGraphType<T> where T : clas
         if (isDictionary || propertyInfo.PropertyType.Namespace != null && !propertyInfo.PropertyType.Namespace.StartsWith("System"))
         {
             if (propertyInfo.PropertyType.IsEnum)
-                Field(GraphTypeMapper.GetGraphType(propertyInfo.PropertyType, isInput: true), propertyInfo.Name, resolve: context => Convert.ToInt32(propertyInfo.GetValue(context.Source)));
+                Field(GraphTypeMapper.GetGraphType(propertyInfo.PropertyType, isInput: true), propertyInfo.Name);
             else
             {
                 var gqlType = Assembly.GetAssembly(typeof(ISchema)).GetTypes().FirstOrDefault(t => t.Name == $"{typeName}Type" && t.IsAssignableTo<IGraphType>());
@@ -106,80 +106,30 @@ public class GraphQLInputGenericType<T> : InputObjectGraphType<T> where T : clas
                     var underlyingType = Nullable.GetUnderlyingType(propertyInfo.PropertyType);
                     if (underlyingType.IsEnum)
                     {
-                        Field(GraphTypeMapper.GetGraphType(underlyingType, isInput: true), propertyInfo.Name, resolve: context =>
-                        {
-                            var nullableEnum = propertyInfo.GetValue(context.Source);
-                            if (nullableEnum != null) return (int)nullableEnum;
-                            else return null;
-                        });
+                        Field(GraphTypeMapper.GetGraphType(underlyingType, isInput: true), propertyInfo.Name);
                     }
                     else
                     {
                         switch (underlyingType.Name)
                         {
                             case nameof(Int32):
-                                Field(GraphTypeMapper.GetGraphType(underlyingType, isInput: true), propertyInfo.Name, resolve: context =>
-                                {
-                                    var nullableInt = propertyInfo.GetValue(context.Source) as int?;
-                                    if (nullableInt.HasValue) return nullableInt.Value;
-                                    else return null;
-                                }); break;
+                                Field(GraphTypeMapper.GetGraphType(underlyingType, isInput: true), propertyInfo.Name); break;
                             case nameof(Byte):
-                                Field(GraphTypeMapper.GetGraphType(underlyingType, isInput: true), propertyInfo.Name, resolve: context =>
-                                {
-                                    var nullableByte = propertyInfo.GetValue(context.Source) as byte?;
-                                    if (nullableByte.HasValue) return nullableByte.Value;
-                                    else return null;
-                                }); break;
+                                Field(GraphTypeMapper.GetGraphType(underlyingType, isInput: true), propertyInfo.Name); break;
                             case nameof(Int16):
-                                Field(GraphTypeMapper.GetGraphType(underlyingType, isInput: true), propertyInfo.Name, resolve: context =>
-                                {
-                                    var nullableShort = propertyInfo.GetValue(context.Source) as short?;
-                                    if (nullableShort.HasValue) return nullableShort.Value;
-                                    else return null;
-                                }); break;
+                                Field(GraphTypeMapper.GetGraphType(underlyingType, isInput: true), propertyInfo.Name); break;
                             case nameof(Int64):
-                                Field(GraphTypeMapper.GetGraphType(underlyingType, isInput: true), propertyInfo.Name, resolve: context =>
-                                {
-                                    var nullableLong = propertyInfo.GetValue(context.Source) as long?;
-                                    if (nullableLong.HasValue) return nullableLong.Value;
-                                    else return null;
-                                }); break;
+                                Field(GraphTypeMapper.GetGraphType(underlyingType, isInput: true), propertyInfo.Name); break;
                             case nameof(Double):
-                                Field(GraphTypeMapper.GetGraphType(underlyingType, isInput: true), propertyInfo.Name, resolve: context =>
-                                {
-                                    var nullableDouble = propertyInfo.GetValue(context.Source) as double?;
-                                    if (nullableDouble.HasValue) return nullableDouble.Value;
-                                    else return null;
-                                }); break;
+                                Field(GraphTypeMapper.GetGraphType(underlyingType, isInput: true), propertyInfo.Name); break;
                             case nameof(Single):
-                                Field(GraphTypeMapper.GetGraphType(underlyingType, isInput: true), propertyInfo.Name, resolve: context =>
-                                {
-                                    var nullableSingle = propertyInfo.GetValue(context.Source) as float?;
-                                    if (nullableSingle.HasValue) return nullableSingle.Value;
-                                    else return null;
-                                }); break;
+                                Field(GraphTypeMapper.GetGraphType(underlyingType, isInput: true), propertyInfo.Name); break;
                             case nameof(Boolean):
-                                Field(GraphTypeMapper.GetGraphType(underlyingType, isInput: true), propertyInfo.Name, resolve: context =>
-                                {
-                                    var nullableBoolean = propertyInfo.GetValue(context.Source) as bool?;
-                                    if (nullableBoolean.HasValue) return nullableBoolean.Value;
-                                    else return null;
-                                }); break;
+                                Field(GraphTypeMapper.GetGraphType(underlyingType, isInput: true), propertyInfo.Name); break;
                             case nameof(Decimal):
-                                Field(GraphTypeMapper.GetGraphType(underlyingType, isInput: true), propertyInfo.Name, resolve: context =>
-                                {
-                                    var nullableDecimal = propertyInfo.GetValue(context.Source) as decimal?;
-                                    if (nullableDecimal.HasValue) return nullableDecimal.Value;
-                                    else return null;
-                                }); break;
+                                Field(GraphTypeMapper.GetGraphType(underlyingType, isInput: true), propertyInfo.Name); break;
                             case nameof(DateTime):
-                                Field(GraphTypeMapper.GetGraphType(underlyingType, isInput: true), propertyInfo.Name, resolve: context =>
-                                {
-                                    var nullableDateTime = propertyInfo.GetValue(context.Source) as DateTime?;
-                                    if (nullableDateTime.HasValue) return nullableDateTime.Value;
-                                    else return null;
-                                }); break;
+                                Field(GraphTypeMapper.GetGraphType(underlyingType, isInput: true), propertyInfo.Name); break;
                         }
                     }
                 }
