@@ -18,16 +18,13 @@ public class BookAppService : ReadOnlyAppService<BookDto, BookDto, Guid, GetBook
 
     public override async Task<PagedResultDto<BookDto>> GetListAsync(GetBookListInput input)
     {
-        IEnumerable<BookDto> query = (await Repository.GetListAsync());
-            
-        if (!input.Filter.IsNullOrEmpty())
-        {
-            query = query.Where(x => x.Name.Contains(input.Filter));
-        }
+        var query = (await Repository.GetListAsync())
+            .WhereIf(!input.Filter.IsNullOrWhiteSpace(), x => x.Name.Contains(input.Filter))
+            .WhereIf(input.Pages is not null, x => x.Pages == input.Pages);
 
         var count = query.Count();
         var items = query.Skip(input.SkipCount).Take(input.MaxResultCount).ToList();
-            
+
         return new PagedResultDto<BookDto>(count, items);
     }
 }

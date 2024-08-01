@@ -21,21 +21,27 @@ public class BookRepository : IReadOnlyRepository<BookDto, Guid>, ITransientDepe
 
     public BookRepository()
     {
-        DataList = new List<BookDto>
-        {
-            new(Guid.Parse("F98F7466-9385-4702-B27B-FA88804DD19D"), "Book1", new List<string>(),
-                new AuthorDto(1, "Author1"), new List<Sponsor>()),
-            new(Guid.Parse("CA2EBE5D-D0DC-4D63-A77A-46FF520AEC44"), "Book2", new List<string>{ "Children", "Adult" },
-                new AuthorDto(1, "Author1"), new List<Sponsor>{ new("John"), new("Amy")}),
-            new(Guid.Parse("9B0C1169-0DA6-4E01-9236-EC603908BAE9"), "Book3", new List<string>(),
-                new AuthorDto(2, "Author2"), new List<Sponsor>()),
-            new(Guid.Parse("9A06F713-F62A-4E1C-A6AE-AB2BEB3ADC08"), "Book4", new List<string>(),
-                new AuthorDto(2, "Author2"), new List<Sponsor>()),
-            new(Guid.Parse("07C3BB72-1CD3-4E0C-B38A-604865433FC2"), "Book5", new List<string>(),
-                new AuthorDto(3, "Author3"), new List<Sponsor>()),
-            new(Guid.Parse("DDC941A7-87E9-4EEF-AF94-755E8E4494DC"), "book", new List<string>(),
-                new AuthorDto(3, "Author3"), new List<Sponsor>()),
-        };
+        DataList =
+        [
+            new BookDto(Guid.Parse("F98F7466-9385-4702-B27B-FA88804DD19D"), "Book1", 100, [],
+                new AuthorDto(1, "Author1"), []),
+
+            new BookDto(Guid.Parse("CA2EBE5D-D0DC-4D63-A77A-46FF520AEC44"), "Book2", 200,
+                ["Children", "Adult"],
+                new AuthorDto(1, "Author1"), [new Sponsor("John"), new Sponsor("Amy")]),
+
+            new BookDto(Guid.Parse("9B0C1169-0DA6-4E01-9236-EC603908BAE9"), "Book3", 300, [],
+                new AuthorDto(2, "Author2"), []),
+
+            new BookDto(Guid.Parse("9A06F713-F62A-4E1C-A6AE-AB2BEB3ADC08"), "Book4", 400, [],
+                new AuthorDto(2, "Author2"), []),
+
+            new BookDto(Guid.Parse("07C3BB72-1CD3-4E0C-B38A-604865433FC2"), "Book5", 500, [],
+                new AuthorDto(3, "Author3"), []),
+
+            new BookDto(Guid.Parse("DDC941A7-87E9-4EEF-AF94-755E8E4494DC"), "book", 600, [],
+                new AuthorDto(3, "Author3"), [])
+        ];
     }
 
     public Task<List<BookDto>> GetListAsync(bool includeDetails = false, CancellationToken cancellationToken = new())
@@ -48,8 +54,8 @@ public class BookRepository : IReadOnlyRepository<BookDto, Guid>, ITransientDepe
         return Task.FromResult((long)DataList.Count);
     }
 
-    public Task<List<BookDto>> GetPagedListAsync(int skipCount, int maxResultCount, string sorting, bool includeDetails = false,
-        CancellationToken cancellationToken = new())
+    public Task<List<BookDto>> GetPagedListAsync(int skipCount, int maxResultCount, string sorting,
+        bool includeDetails = false, CancellationToken cancellationToken = new())
     {
         return Task.FromResult(DataList.Skip(skipCount).Take(maxResultCount).ToList());
     }
@@ -86,6 +92,7 @@ public class BookRepository : IReadOnlyRepository<BookDto, Guid>, ITransientDepe
     }
 
     public IAsyncQueryableExecuter AsyncExecuter { get; }
+
     public Task<BookDto> GetAsync(Guid id, bool includeDetails = true, CancellationToken cancellationToken = new())
     {
         return Task.FromResult(DataList.Single(x => x.Id == id));
