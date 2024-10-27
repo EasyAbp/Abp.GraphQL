@@ -155,20 +155,17 @@ public class GraphQLInputGenericType<T> : InputObjectGraphType<T> where T : clas
 
             if (propertyValue is not null)
             {
-                fields.Add(new GraphQLObjectField
-                {
-                    Name = new GraphQLName(propertyInfo.Name),
-                    Value = (GraphQLValue)Activator.CreateInstance(PropertiesAstNodeType[propertyInfo.Name],
-                        propertyValue)
-                });
+                fields.Add(new GraphQLObjectField(
+                    new GraphQLName(propertyInfo.Name),
+                    (GraphQLValue)Activator.CreateInstance(PropertiesAstNodeType[propertyInfo.Name], propertyValue)!
+                ));
             }
             else
             {
-                fields.Add(new GraphQLObjectField
-                {
-                    Name = new GraphQLName(propertyInfo.Name),
-                    Value = new GraphQLNullValue()
-                });
+                fields.Add(new GraphQLObjectField(
+                    new GraphQLName(propertyInfo.Name),
+                    new GraphQLNullValue()
+                ));
             }
         }
 
