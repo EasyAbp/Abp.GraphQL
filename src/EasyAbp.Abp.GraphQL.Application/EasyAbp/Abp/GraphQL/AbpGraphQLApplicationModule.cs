@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Volo.Abp.AutoMapper;
+using Microsoft.Extensions.DependencyInjection;
+using Volo.Abp.Mapperly;
 using Volo.Abp.Modularity;
 using Volo.Abp.Application;
 
@@ -9,16 +9,12 @@ namespace EasyAbp.Abp.GraphQL;
     typeof(AbpGraphQLApplicationContractsModule),
     typeof(AbpGraphQLProviderSharedModule),
     typeof(AbpDddApplicationModule),
-    typeof(AbpAutoMapperModule)
+    typeof(AbpMapperlyModule)
 )]
 public class AbpGraphQLApplicationModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
-        context.Services.AddAutoMapperObjectMapper<AbpGraphQLApplicationModule>();
-        Configure<AbpAutoMapperOptions>(options =>
-        {
-            options.AddMaps<AbpGraphQLApplicationModule>(validate: true);
-        });
+        context.Services.AddMapperlyObjectMapper<AbpGraphQLApplicationModule>();
     }
 }
