@@ -8,6 +8,7 @@
     </PropertyGroup>
     
     <ItemGroup>
+        <PackageReference Include="Volo.Abp.Mapperly" Version="$(AbpVersion)" />
         <PackageReference Include="Volo.Abp.Ddd.Domain" Version="$(AbpVersion)" />
         <PackageReference Include="Volo.Abp.Ddd.Application" Version="$(AbpVersion)" />
         <PackageReference Include="Volo.Abp.Ddd.Application.Contracts" Version="$(AbpVersion)" />
