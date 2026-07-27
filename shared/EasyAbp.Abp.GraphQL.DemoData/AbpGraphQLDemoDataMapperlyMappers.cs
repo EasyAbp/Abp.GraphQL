@@ -3,6 +3,7 @@ using EasyAbp.Abp.GraphQL.Books.Dtos;
 using EasyAbp.Abp.GraphQL.Citys.Dtos;
 using Riok.Mapperly.Abstractions;
 using Volo.Abp.Mapperly;
+using Volo.Abp.ObjectExtending;
 
 namespace EasyAbp.Abp.GraphQL;
 
@@ -25,10 +26,12 @@ public partial class BookDtoToBookDtoMapper : MapperBase<BookDto, BookDto>
 }
 
 [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
-[MapExtraProperties]
+[MapExtraProperties(DefinitionChecks = MappingPropertyDefinitionChecks.None)]
 public partial class CityDtoToCityDtoMapper : MapperBase<CityDto, CityDto>
 {
-    // ExtraProperties has a protected setter Mapperly cannot write; MapExtraProperties copies it instead.
+    /* ExtraProperties has a protected setter Mapperly cannot write; MapExtraProperties copies it instead.
+     * The demo data sets extra properties without declaring them on the ObjectExtensionManager,
+     * so definition checks have to be disabled to copy them all. */
     [MapperIgnoreTarget(nameof(CityDto.ExtraProperties))]
     public override partial CityDto Map(CityDto source);
 

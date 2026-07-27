@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <AbpVersion>10.2.1</AbpVersion>
+    <AbpVersion>10.6.0</AbpVersion>
     <GraphQLDotnetVersion>8.8.4</GraphQLDotnetVersion>
     <GraphQLDotnetServerUiVersion>8.3.3</GraphQLDotnetServerUiVersion>
   </PropertyGroup>
